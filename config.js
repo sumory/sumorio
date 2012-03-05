@@ -2,10 +2,9 @@ exports.config = {
 	name : 'sumorio',
 	description : 'sumorio 是用Node.js开发的社区软件',
 	host : 'http://127.0.0.1', // host 结尾不要添加'/'
-	db : 'mongodb://127.0.0.1/node_club',
 	session_secret : 'sumorio_secret',
 	auth_cookie_name : 'sumorio_secret',
-	port : 80,
+	app_port : 8080,
 	version : '0.0.1',
 
 	// 话题列表显示的话题数量

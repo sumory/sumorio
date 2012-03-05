@@ -4,7 +4,7 @@
   , "main": "./app.js"
   , "private": true
   , "dependencies": {
-      "express": "2.5.1",
+      "express": "",
       "ejs": "0.5.0",
       "eventproxy": "0.1.0",
       "mysql": "",
