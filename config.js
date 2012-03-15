@@ -1,22 +1,11 @@
 exports.config = {
 	name : 'sumorio',
-	description : 'sumorio 是用Node.js开发的社区软件',
-	host : 'http://127.0.0.1', // host 结尾不要添加'/'
+	description : 'sumorio 是基于Node.js开发的社区, 您也可以把它当做博客系统使用',
+	host : 'http://127.0.0.1',
 	session_secret : 'sumorio_secret',
 	auth_cookie_name : 'sumorio_secret',
 	app_port : 8080,
-	version : '0.0.1',
-
-	// 话题列表显示的话题数量
-	list_topic_count : 20,
-
-	// mail SMTP
-	mail_port : 25,
-	mail_user : 'club',
-	mail_pass : 'club',
-	mail_host : 'smtp.126.com',
-	mail_sender : 'club@126.com',
-	mail_use_authentication : true,
+	version : '0.1 beta',
 
 	//logfiles directory
 	logDirectory : __dirname + "/logs/",
@@ -27,6 +16,8 @@ exports.config = {
 	user : "root",
 	password : "",
 	database : "sumorio",
-	maxSockets : 80,
-	timeout : 1
+	maxSockets : 80,//pool使用
+	timeout : 1,//pool使用
+	
+	admins: {sumory:true}
 };

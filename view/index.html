@@ -1,3 +1,32 @@
-<%-welcome%>
-<a href='/user/1'>点击获取</a>
+
+
+
+<div class='panel' style="width: 600px; margin: auto; margin-top: 50px;height:300px;">
+	<div class='inner'>
+		<div class='sep10'></div>
+		<div class='sep10'></div>
+		
+			<div class='control-group'>
+				<%-welcome%>
+				<br>
+				sumorio(summary => input | ouput)<br/>
+				sumorio是基于nodejs开发的社区系统, 现已完成个人部分功能, 社区功能正在开发中...
+				<br><br><br>
+				<% 
+				var userId=0;
+				if(locals.current_user){ 
+				 userId=current_user.id;
+				%>
+				<b><a href='/user/<%=userId%>'>到我的主页</a></b>
+				<%
+				}
+				else{
+				%>
+				<b><a href='/signin'>请先登录</a></b>
+				<%
+				}
+				%>
+			</div>
 			
+	</div>
+</div>

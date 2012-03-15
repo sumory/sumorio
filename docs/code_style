@@ -7,3 +7,5 @@ function Socket(options) {
 }
 
 util.inherits(Socket, stream.Stream);
+
+....待完善

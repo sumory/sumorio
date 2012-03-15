@@ -1,0 +1,9 @@
+<% if(category.is_selected){ %>
+<span class='tag_selectable tag_select' tag_id='<%= category.id %>'>
+	<%= category.name %>
+</span>
+<% }else{ %>
+<span class='tag_selectable' tag_id='<%= category.id %>'>
+	<%= category.name %>
+</span>
+<% } %>

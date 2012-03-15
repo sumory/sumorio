@@ -1,0 +1,10 @@
+<tr style="line-height:30px;">
+	<td><%= category.sequence %></td>
+	<td><%= category.name %></td>
+	<td>
+	<a href='/category/<%= category.id %>/edit'><img class='user_icon' src='/img/doc_edit_icon&16.png' title='编辑' /></a>
+	</td>
+	<td>
+	<a class='delete_category_btn' href='/category/<%= category.id %>/delete'><img class='user_icon' src='/img/trash_icon&16.png' title='删除' /></a>
+	</td>
+</tr>

@@ -1,0 +1,89 @@
+
+<%
+var categories=locals.categories;//已标明哪些是此文章所属的分类
+%>
+<div class="main-right">
+	<ul class="sortable">
+	<li>
+	<div class="right-body">
+
+		<div class='panel'>
+			<div class='header'>
+				<span class='col_fade'>编辑文章</span>
+			</div>
+			<form id='create_archive_form' action='/archive/<%=archive.id%>/modify' method='post'  onsubmit="return check();">
+			<div class='inner'>				
+					<div>
+						<label class='bold' for='title'>标题</label>
+						<div>
+							<input class='span8' id='title' name='title' maxlength='100' style='width:550px' value='<%= archive.title %>'>
+							字数在8到100个之间
+						</div>
+					</div>
+					<div class='sep10'></div>
+					<div class='sep10'></div>
+					<div>
+						<label class='bold' for='t_content'>内容和标签</label>
+						<div class='tabbable'>
+									<div style='width: 698px;height:40px;padding:0px;'><%- partial('archive/category_selectable',{collection:categories, as:'category'}) %></div>
+									<div class='input'>
+										<textarea class='span8' id="editor"  name='content' rows='20' style='width:700px;height:auto;'><%= archive.content %></textarea>
+									</div>
+									
+						</div>
+					</div>
+					<input type='hidden' id='archive_categories' name='archive_categories' value=''></input>
+					<input type='hidden' name='_csrf' value='<%= csrf %>' />
+					<div class='sep10'></div>
+					<div class='sep10'></div>
+					<div class='form-actions'>
+							<input type='submit' id='submit_btn' class='btn' value="修改并提交"/>
+					</div>
+			</div>
+			
+			</form>
+		</div>
+
+	</div>
+	<!-- ajaxupload -->
+	<script type='text/javascript' src='/libs/ajax-upload/ajaxupload.js'></script>
+	<!-- markdown editor -->
+	<script type='text/javascript'>
+	
+		var editor = new baidu.editor.ui.Editor();
+		editor.render('editor');
+	    function check(){
+	        editor.sync();//同步
+	        var values=[];
+			$('.tag_selectable').each(function(){
+				if($(this).hasClass('tag_select')){
+					values.push($(this).attr('tag_id'));
+				}
+			});
+			$('#archive_categories').val(values);
+			if(document.getElementById('title').value.length >100 || document.getElementById('title').value.length <8){
+	   		 	alert('标题字数须在8-100之间');
+	   		    return false;
+	   		}
+	   		else if(document.getElementById('archive_categories').value==''){
+	   		 	alert('请至少选择一个分类');
+	   		    return false;
+	   		}
+	   		else{
+	   		 	return true;
+	   		}
+	    }
+
+		$(document).ready(function(){
+			$('.tag_selectable').click(function(){
+				$(this).toggleClass('tag_select');
+			});
+	
+		});
+	</script>
+
+			
+		</li>
+	</ul>
+</div>
+<%- partial('user/sidebar',{collections:result,as:'result'}) %>

@@ -1,0 +1,36 @@
+
+
+<div class='panel' style="width: 600px; margin: auto; margin-top: 50px;">
+	<div class='inner'>
+		<div class='sep10'></div>
+		<div class='sep10'></div>
+		<% if(locals.error){ %>
+		<div class="alert alert-error">
+			<a class="close" data-dismiss="alert" href="#">&times;</a> <strong><%= error %></strong>
+		</div>
+		<% } %>
+		<form id='signin_form' action='/signin' method='post'>
+			<div class='control-group'>
+				<label class='control-label' for='name'>用户名</label>
+				<div class='controls'>
+					<input class='input-xlarge' id='name' name='name' size='30' type='text' />
+				</div>
+			</div>
+			<div class='control-group'>
+				<label class='control-label' for='pass'>密码</label>
+				<div class='controls'>
+					<input class='input-xlarge' id='pass' name='pass' size='30' type='password' />
+
+					<p class='help-block' style='padding-top: 8px;'>
+						<a href='javascript:void(0)' onclick="alert('i am so sorry for that!');">我忘记了密码</a>
+					</p>
+				</div>
+			</div>
+			<input type='hidden' name='_csrf' value='<%= csrf %>' />
+			<div class='control-group'>
+				<input type='submit' class='btn' value='登录' />
+			</div>
+		</form>
+	</div>
+</div>
+
