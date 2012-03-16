@@ -1,6 +1,6 @@
 exports.config = {
 	name : 'sumorio',
-	description : 'sumorio 是基于Node.js开发的社区, 您也可以把它当做博客系统使用.',
+	description : 'sumorio 是基于Node.js开发的社区, 您也可以把它当做博客系统使用..',
 	host : 'http://127.0.0.1',
 	session_secret : 'sumorio_secret',
 	auth_cookie_name : 'sumorio_secret',
