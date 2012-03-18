@@ -2,10 +2,14 @@ html {
 	background: #f7f5f5 url(/img/paper.jpg) repeat;
 }
 
-body,div,dl,dt,dd,ul,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td
+body,div,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,blockquote,th,td,dl,dt,dd
 {
 	margin: 0;
-	padding: 0
+	padding: 0;
+}
+
+#menu_bar ul,#menu_bar li,#menu_bar p{
+	padding: 0;
 }
 
 table {

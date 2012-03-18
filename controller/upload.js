@@ -47,7 +47,7 @@ exports.upload_image = function(req, res, next) {
 
                 // ueditor有提供相对路径到绝对路径的转化，考虑下一版本引入
                 var url = 'http://' + host + '/user_data/images/' + uid + '/' + new_name;
-                console.log('url:' + url);
+                //console.log('url:' + url);
                 res.json({// 严格此格式，否则ueditor会发生乱七八糟错误
                     state : 'SUCCESS',
                     url : url,
