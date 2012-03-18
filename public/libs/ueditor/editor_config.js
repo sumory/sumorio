@@ -282,12 +282,12 @@
         focus:false, //初始化时，是否让编辑器获得焦点true或false
         indentValue:'2em', //初始化时，首行缩进距离
         pageBreakTag:'_baidu_page_break_tag_', //分页符
-        minFrameHeight:320, //最小高度
+        minFrameHeight:200, //最小高度
         autoHeightEnabled:true, //是否自动长高
         autoFloatEnabled:true, //是否保持toolbar的位置不动
         elementPathEnabled:true, //是否启用elementPath
         wordCount:true, //是否开启字数统计
-        maximumWords:10000, //允许的最大字符数
+        maximumWords:20000, //允许的最大字符数
         tabSize:4, //tab的宽度
         tabNode:'&nbsp;', //tab时的单一字符
         imagePopup:true, //图片操作的浮层开关，默认打开
