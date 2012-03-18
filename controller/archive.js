@@ -296,11 +296,22 @@ exports.delete_archive = function(req, res, next) {
                 });
                 return;
             }
+            
+            mysql.update('delete from reply where archive_id = ?', [ req.params.archive_id ], function(err, info) {
+                if (err) {
+                    log.error('删除文章[删除回复]出错:' + info);
+                    res.render('notify/notify', {
+                        error : '删除这篇文章的回复出错'
+                    });
+                    return;
+                }
 
-            res.render('notify/notify', {
-                success : '删除文章成功'
+                res.render('notify/notify', {
+                    success : '删除文章成功'
+                });
+                return;
             });
-            return;
+            
         });
     });
 };
@@ -315,30 +326,28 @@ exports.delete_archive = function(req, res, next) {
 exports.view_archives = function(req, res, next) {
     var category_id = req.params.category_id;
     var user_id = req.params.user_id;
-    mysql
-            .query(
-                    'select  id,title,content,visit_count,reply_count,author_id,DATE_FORMAT(update_at,"%Y-%m-%d %H:%i:%s") as update_at,DATE_FORMAT(create_at,"%Y-%m-%d %H:%i:%s") as create_at  from archive where author_id = ? and id in (select archive_id from archive_category where category_id = ?) order by update_at desc',
-                    [ user_id, category_id ], function(err, archives) {
-                        if (err) {
-                            res.render('notify/notify', {
-                                error : '查找分类下文章出错'
-                            });
-                            return;
-                        }
-                        common.initSidebar(user_id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
-                            if (err) {
-                                res.render('notify/notify', {
-                                    error : '查找用户信息出错'
-                                });
-                                return;
-                            }
-                            res.render('archive/archives', {
-                                result : result,
-                                archives : archives
-                            });
-                            return;
-                        });
-                    });
+    
+    mysql.query('select  id,title,content,visit_count,reply_count,author_id,DATE_FORMAT(update_at,"%Y-%m-%d %H:%i:%s") as update_at,DATE_FORMAT(create_at,"%Y-%m-%d %H:%i:%s") as create_at  from archive where author_id = ? and id in (select archive_id from archive_category where category_id = ?) order by update_at desc', [ user_id, category_id ], function(err, archives) {
+        if (err) {
+            res.render('notify/notify', {
+                error : '查找分类下文章出错'
+            });
+            return;
+        }
+        common.initSidebar(user_id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
+            if (err) {
+                res.render('notify/notify', {
+                    error : '查找用户信息出错'
+                });
+                return;
+            }
+            res.render('archive/archives', {
+                result : result,
+                archives : archives
+            });
+            return;
+        });
+    });
 };
 
 /**

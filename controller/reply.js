@@ -37,9 +37,18 @@ exports.create_reply = function(req,res,next){
                 cb(null,null);
             });
         },
+        update_reply_count : function(cb) {
+            mysql.update('update archive set reply_count = reply_count+1 where id = ?',[archive_id], function(err, info){
+                if(err){
+                    log.error('回复时更新文章回复数出现错误');
+                    cb(err, '回复时更新文章回复数出现错误');
+                }
+                cb(null,null);
+            });
+        },
     }, function(err, results) {
         if(err){
-            res.render('notify/notify',{error:results.info});
+            res.render('notify/notify',{error:((results.info || '')+(results.update_reply_count || ''))});
             return;
         }
         res.redirect('/archive/'+archive_id);
@@ -59,14 +68,21 @@ exports.delete_reply = function(req,res,next){
         return;
     }
 	
+	var archive_id = req.body.archive_id;
 	var reply_id = req.body.reply_id;
 	mysql.update('delete from reply where id = ? and author_id = ?', [reply_id, req.session.user.id], function(err, info){
 	    if(err){
 	        res.json({status:'failed'});
 	        return;
 	    }
-	    res.json({status:'success'});
-	    return;
+
+        mysql.update('update archive set reply_count = reply_count-1 where id = ?',[archive_id], function(err, info){
+            if(err){
+                log.error('删除回复时更新文章回复数出现错误');
+            }
+            res.json({status:'success'});
+            return;
+        });
 	});
 };
 
