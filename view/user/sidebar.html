@@ -19,8 +19,17 @@ var categories = result.categories;
 	</div>
 
 	<%}%>
+	<br/>
 	
-	<div style="margin-bottom:20px;"><a href="/archive/create" class="btn wbtn"><strong>发布文章</strong><span></span></a></div>
+	<% if(locals.current_user && (locals.current_user.id == user.id)){%>
+	<div style="height:100px;margin-bottom:30px;">
+	<a href="/archive/create" class="btn wbtn"><strong>发布文章</strong><span></span></a>
+	</div>
+	<%}else{%>
+	<div style="height:50px;margin-bottom:30px;"></div>
+	<%}%>
+	
+	
 	<ol class="activity">
 		<li>&nbsp;我的归档&nbsp;&nbsp;&nbsp;&nbsp;<a href="/categories/edit/">编辑</a></li>
 		<%
