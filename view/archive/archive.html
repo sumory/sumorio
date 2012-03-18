@@ -50,7 +50,7 @@
 			<!-- 回复输入框-->	
 			<% if (locals.current_user && locals.archive) { %>
 			<div class='sep10'></div>
-			<div class='panel'>
+			<div class='panel' id='reply_editor_panel'>
 				<div class='header'>
 					<span class='col_fade'>添加回复</span>
 				</div>
@@ -62,6 +62,7 @@
 						<input type='submit' class='btn' value='回复'/>
 						<span class='sp10'></span>
 					</form>
+					
 				</div>
 			</div>
 			<% } %>
@@ -74,8 +75,6 @@
 
 
 <% if (locals.current_user && locals.archive) { %>
-<!-- ajaxupload -->
-<script type='text/javascript' src='/libs/ajax-upload/ajaxupload.js'></script>
 
 <script type='text/javascript'>
 	$(document).ready(function() {

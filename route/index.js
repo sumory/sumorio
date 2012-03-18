@@ -1,10 +1,8 @@
 var user_ctrl = require('../controller/user.js');
 exports.user_index = user_ctrl.index;
 
-
 var site_ctrl = require('../controller/site.js');
 exports.site_index = site_ctrl.index;
-
 
 var sign_ctrl = require('../controller/sign.js');
 exports.signup = sign_ctrl.signup;
@@ -32,7 +30,8 @@ exports.create_reply = reply_ctrl.create_reply;
 exports.create_reply2 = reply_ctrl.create_reply2;
 exports.delete_reply = reply_ctrl.delete_reply;
 
-
+var upload_ctrl = require('../controller/upload.js');
+exports.upload_image = upload_ctrl.upload_image;
 
 
 

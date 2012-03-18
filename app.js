@@ -81,5 +81,8 @@ app.post('/:archive_id/reply', routes.create_reply);
 app.post('/:archive_id/reply2', routes.create_reply2);
 app.post('/reply/:reply_id/delete', routes.delete_reply);
 
+//上传图片
+app.post('/upload/image', routes.upload_image);
+
 app.listen(config.app_port);
 console.log("Sumorio is listening on port %d in %s mode", app.address().port, app.settings.env);
