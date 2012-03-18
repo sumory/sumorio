@@ -1,3 +1,4 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <html xmlns="http://www.w3.org/1999/xhtml"> 
 <head>
 	<% if(locals.topic) { %>
@@ -5,216 +6,18 @@
 	<title><%= config.description %></title> <% } %>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-	
+
+
 	<link rel="stylesheet" href="/stylesheets/style.css" />
 	<link rel="stylesheet" href="/stylesheets/main.css" />
 	<script type='text/javascript' src='/libs/jquery/jquery.js'></script>
 	<script type="text/javascript" charset="utf-8" src="/libs/SyntaxHighlighter/shCore.js"></script>
 	<script type="text/javascript" charset="utf-8" src="/libs/ueditor/editor_config.js"></script>
     <script type="text/javascript" charset="utf-8" src="/libs/ueditor/editor_all_min.js"></script>
-	<link rel="stylesheet" type="text/css" href="/libs/ueditor/themes/default/ueditor.css"/>
+	
 	<link rel="stylesheet" type="text/css" href="/libs/SyntaxHighlighter/shCoreDefault.css"/>
-	
-	<style>
-	.control-group{
-		float: left;
-		margin:10px;
-		width:500px;
-	}
-	.control-label{
-		float: left;
-		line-height: 30px;
-	}
-	.controls{
-		margin-left: 160px;
-	}
-	.main-left{
-		-webkit-border-radius: 3px;
-		-moz-border-radius: 3px;
-		-o-border-radius: 3px;
-		border-radius: 3px;
-		width:192px;
-	}
-	.right-body{
-		background-color: white;
-		position: static;
-		width: 762px !important;
-		min-height:500px;
-		text-shadow: 0 1px rgba(255, 255, 255, 0.9);
-		background-color: #fff;
-		box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
-		-moz-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
-		-webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
-		-webkit-border-radius: 3px;
-		-moz-border-radius: 3px;
-		-o-border-radius: 3px;
-		border-radius: 3px;
-	}
-	.right-body h3 {
-		padding:  0 0 9px 0px;
-		font-size: 14px;
-		font-weight: 700;
-		overflow: hidden;
-		white-space: nowrap;
-		margin-right: 45px;
-	}
-	.right-body .pin-count {
-		position: absolute;
-		right: 15px;
-		top: 9px;
-		font-size: 14px;
-		color: #777;
-	}
-	
-	.right-body .pin-count {
-		position: absolute;
-		right: 15px;
-		top: 9px;
-		font-size: 14px;
-		color: #777;	
-	}
-	.main-right{
-		float: left;
-	    margin-left: 0;
-	    margin-top: 15px;
-	    width: 770px;
-	}
-	.tag_in_topic{
-		-webkit-border-radius: 3px;
-		-moz-border-radius: 3px;
-		-o-border-radius: 3px;
-		border-radius: 3px;
-		font-size: 12px;
-		padding: 1px 3px;
-		margin: 0px 10px 10px 0px;
-		background: #cFcFcF;
-		display: inline-block;
-		cursor: pointer;
-		line-height:20px;
-	}
-	
-	.user_card{
-		float:left;
-		height:100px;
-	}
-	.user_card_left{
-		float:left;
-		width:120px;
-	}
-	.user_card_left h1{
-		padding:0;
-		line-height:0.6em;
-		margin:0 0 20px 0;
-		font-size: 22px;
-		font-weight: 300;
-		word-wrap: break-word;
-	}
-	.user_card_left p{
-		margin: 0 0 4px;
-		font-size: 12px;
-		word-wrap: break-word;
-		line-height: 1.35em;
-	}
-	.user_card_right{
-		float:right;
-		width:70px;
-	}
-	.user_card_right img{
-		float:right;
-		max-width:70px;
-	}
-	
-	.btn.active, .btn:active {
-		background-image: none;
-		-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-		-moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
-		background-color: #E6E6E6;
-		background-color: #D9D9D9 9;
-		color: rgba(0, 0, 0, 0.5);
-		outline: 0;
-	}
-	.btn:hover {
-		color: #333;
-		text-decoration: none;
-		background-color: #E6E6E6;
-		background-position: 0 -15px;
-		-webkit-transition: background-position 0.1s linear;
-		-moz-transition: background-position 0.1s linear;
-		-ms-transition: background-position 0.1s linear;
-		-o-transition: background-position 0.1s linear;
-		transition: background-position 0.1s linear;
-	}
-	.btn {
-		display: inline-block;
-		padding: 4px 10px 4px;
-		font-size: 13px;
-		line-height: 18px;
-		color: #333;
-		text-align: center;
-		text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
-		background-color: #FAFAFA;
-		background-image: -webkit-gradient(linear, 0 0, 0 100%, from(white), color-stop(25%, white), to(#E6E6E6));
-		background-image: -webkit-linear-gradient(white, white 25%, #E6E6E6);
-		background-image: -moz-linear-gradient(top, white, white 25%, #E6E6E6);
-		background-image: -ms-linear-gradient(white, white 25%, #E6E6E6);
-		background-image: -o-linear-gradient(white, white 25%, #E6E6E6);
-		background-image: linear-gradient(white, white 25%, #E6E6E6);
-		background-repeat: no-repeat;
-		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
-		border: 1px solid #CCC;
-		border-bottom-color: #BBB;
-		-webkit-border-radius: 4px;
-		-moz-border-radius: 4px;
-		border-radius: 4px;
-		-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-		-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-		box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
-		cursor: pointer;
-	}	
-	.calendar{
-		text-align:center;
-		position:relative;
-		border:0px solid #333333;
-		top:0px;
-		width: 45px;
-		-webkit-border-top-left-radius:9px;
-		-webkit-border-top-right-radius:0px;
-		-webkit-border-bottom-left-radius:0px;
-		-webkit-border-bottom-right-radius:9px;
-		-webkit-box-shadow:#999999 1px 1px 4px;
+	<link rel="stylesheet" type="text/css" href="/libs/ueditor/themes/default/ueditor.css"/>
 
-	}
-	.calendar-month{
-		font-size:11px;
-		font-weight:bold;
-		color:#fff;
-		letter-spacing:0;
-		text-shadow:#000000 1px 1px 1px;
-		text-transform:uppercase;
-		padding:3px 10px;
-		-webkit-border-top-left-radius:7px;
-		-webkit-border-top-right-radius:0px;
-		background-color: rgba(0, 100, 200, 0.60);;
-	}
-	.calendar-day{
-		color:#111;
-		background-color:#ffffff;
-		text-shadow:#ffffff 1px 1px 1px;
-		-webkit-border-bottom-left-radius:0px;
-		-webkit-border-bottom-right-radius:9px;
-		font:bold 18px "Arial Rounded MT Bold", Helvetica, Geneva, sans-serif;
-		padding:2px 0 3px;
-		text-align:center;
-	}
-	.category_tag_link {
-		padding: 1px 2px;
-		border: 1px dashed gray;
-		-webkit-border-radius: 3px;
-		-moz-border-radius: 3px;
-		border-radius: 3px;
-	}
-	</style>
 </head>
 <body>
 	<div id="page" style="display: block;" class="profile">

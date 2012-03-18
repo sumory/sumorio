@@ -5,6 +5,7 @@ var Markdown = require('node-markdown').Markdown;
 var mysql = require('../lib/mysql.js');
 var common = require('./common.js');
 var category_ctrl = require('./category.js');
+var Util = require('../lib/util.js');
 
 /**
  * 查看某篇文章
@@ -18,19 +19,20 @@ exports.view_archive = function(req, res, next) {
     var author_id;
     async.auto({
         archive : function(cb) {
-            mysql.queryOne("select id,title,content,visit_count,reply_count,author_id,DATE_FORMAT(update_at,'%Y-%m-%d %H:%i:%s') as update_at,DATE_FORMAT(create_at,'%Y-%m-%d %H:%i:%s') as create_at from archive where id = ?", [ archive_id ], function(err, archive) {
-                if (err) {
-                    log.error('查找文章时发生异常');
-                    cb(null, {});
-                }
-                if (!archive) {
-                    cb(null, {});
-                }
-                author_id = archive.author_id;
-                cb(null, archive);
-            });
+            mysql.queryOne("select id,title,content,visit_count,reply_count,author_id,DATE_FORMAT(update_at,'%Y-%m-%d %H:%i:%s') as update_at,DATE_FORMAT(create_at,'%Y-%m-%d %H:%i:%s') as create_at from archive where id = ?", [ archive_id ],
+                    function(err, archive) {
+                        if (err) {
+                            log.error('查找文章时发生异常');
+                            cb(null, {});
+                        }
+                        if (!archive) {
+                            cb(null, {});
+                        }
+                        author_id = archive.author_id;
+                        cb(null, archive);
+                    });
         },
-        sidebar_data : ['archive', function(cb){
+        sidebar_data : [ 'archive', function(cb) {
             common.initSidebar(author_id, function(err, result) {
                 if (err) {
                     log.error('查看文章，通过文章id查找用户信息错误');
@@ -42,33 +44,61 @@ exports.view_archive = function(req, res, next) {
                 }
                 cb(null, result);
             });
-        }],
-        updateArchive : ['archive', function(cb){
+        } ],
+        updateArchive : [ 'archive', function(cb) {
             mysql.update("update archive set visit_count = visit_count + 1 where id = ?", [ archive_id ], function(err, info) {
                 if (err) {
                     log.error('更新文章统计信息时发生异常');
                 }
                 cb(null, null);
             });
-        }],
-        archive_categories :  function(cb) {
+        } ],
+        archive_categories : function(cb) {
             mysql.query("select * from category where id in (select category_id from archive_category where archive_id=?)", [ archive_id ], function(err, categories) {
                 if (err) {
                     cb(null, []);
                 }
                 if (!categories) {
-                    cb(null,[]);
+                    cb(null, []);
                 }
                 cb(null, categories);
             });
+        },
+        archive_replies : function(cb) {// 该篇文章的回复
+            mysql.query("select * from reply where archive_id = ?", [ archive_id ], function(err, archive_replies) {
+                if (err) {
+                    cb(null, []);
+                }
+                if (!archive_replies) {
+                    cb(null, []);
+                }
+                
+                //为一级回复查找其author信息及其子回复的相应信息
+                async.map(archive_replies, 
+                    function(reply_item, callback) {    
+                        mysql.queryOne('select * from user where id = ?', [ reply_item.author_id ], function(err, user) {
+                            if (err) {
+                                log.error('查询文章回复的作者信息出错：' + reply_item.author_id);
+                            }
+                            reply_item.friendly_create_at = Util.format_date(reply_item.create_at, true);
+                            reply_item.author = user || {}; 
+                            callback(null,reply_item); 
+                        });    
+                    }, 
+                    function(err,archive_replies) {
+                        cb(null, archive_replies);
+                 });
+            });
         }
     }, function(err, results) {
-        if(err){
+        if (err) {
             res.render('notify/notify', {
                 error : '您查找的文章信息存在错误'
             });
             return;
         }
+        // console.log(results.archive_replies);
+        results.archive.replies = results.archive_replies;
         res.render('archive/archive', {
             result : results.sidebar_data,
             archive : results.archive,
@@ -76,7 +106,7 @@ exports.view_archive = function(req, res, next) {
         });
         return;
     });
-    
+
 };
 
 /**
@@ -97,29 +127,30 @@ exports.edit_archive = function(req, res, next) {
     var author_id;
     async.auto({
         archive : function(cb) {
-            mysql.queryOne("select id,title,content,visit_count,reply_count,author_id,DATE_FORMAT(update_at,'%Y-%m-%d %H:%i:%s') as update_at,DATE_FORMAT(create_at,'%Y-%m-%d %H:%i:%s') as create_at from archive where id = ?", [ archive_id ], function(err, archive) {
-                if (err) {
-                    log.error('编辑文章时查找文章信息发生异常');
-                    cb(null, {});
-                }
-                if (!archive) {
-                    cb(null, {});
-                }
-                else{
-                    author_id = archive.author_id;
-                    if(author_id != req.session.user.id){
-                        res.render('notify/notify', {
-                            error : '您不具备编辑该文章的权限'
-                        });
-                        return; 
-                    }
-                       
-                    cb(null, archive);
-                }
-                
-            });
+            mysql.queryOne("select id,title,content,visit_count,reply_count,author_id,DATE_FORMAT(update_at,'%Y-%m-%d %H:%i:%s') as update_at,DATE_FORMAT(create_at,'%Y-%m-%d %H:%i:%s') as create_at from archive where id = ?", [ archive_id ],
+                    function(err, archive) {
+                        if (err) {
+                            log.error('编辑文章时查找文章信息发生异常');
+                            cb(null, {});
+                        }
+                        if (!archive) {
+                            cb(null, {});
+                        }
+                        else {
+                            author_id = archive.author_id;
+                            if (author_id != req.session.user.id) {
+                                res.render('notify/notify', {
+                                    error : '您不具备编辑该文章的权限'
+                                });
+                                return;
+                            }
+
+                            cb(null, archive);
+                        }
+
+                    });
         },
-        sidebar_data : ['archive', function(cb){
+        sidebar_data : [ 'archive', function(cb) {
             common.initSidebar(author_id, function(err, result) {
                 if (err) {
                     log.error('编辑文章，通过文章id查找用户信息错误');
@@ -131,7 +162,7 @@ exports.edit_archive = function(req, res, next) {
                 }
                 cb(null, result);
             });
-        }],
+        } ],
         archive_categories : function(cb) {
             mysql.query("select category_id as id from archive_category where archive_id = ?", [ archive_id ], function(err, archive_categories) {
                 if (err) {
@@ -142,13 +173,13 @@ exports.edit_archive = function(req, res, next) {
             });
         }
     }, function(err, results) {
-        if(err){
+        if (err) {
             res.render('notify/notify', {
                 error : '您要编辑的文章信息存在错误'
             });
             return;
         }
-        
+
         for ( var i = 0; results.sidebar_data.categories.length && i < results.sidebar_data.categories.length; i++) {
             for ( var j = 0; j < results.archive_categories.length; j++) {
                 if (results.archive_categories[j].id == results.sidebar_data.categories[i].id) {
@@ -156,14 +187,14 @@ exports.edit_archive = function(req, res, next) {
                 }
             }
         }
-        
+
         res.render('archive/edit', {
             result : results.sidebar_data,
             archive : results.archive,
             categories : results.sidebar_data.categories
         });
         return;
-    }); 
+    });
 };
 
 /**
@@ -190,9 +221,9 @@ exports.modify_archive = function(req, res, next) {
         archive_categories = req.body.archive_categories.split(',');
     }
     var updateDate = new Date();
-    
+
     async.auto({
-        updateArchive:function(cb){//更新文章基本信息
+        updateArchive : function(cb) {// 更新文章基本信息
             mysql.update('update archive set title = ?, content = ?, update_at = ? where id = ?', [ title, content, updateDate, archive_id ], function(err, info) {
                 if (err) {
                     log.error('更新文章时发生异常');
@@ -201,7 +232,7 @@ exports.modify_archive = function(req, res, next) {
                 cb(null, '');
             });
         },
-        deleteArchiveCategories:['updateArchive',function(cb){//删除旧的文章分类
+        deleteArchiveCategories : [ 'updateArchive', function(cb) {// 删除旧的文章分类
             mysql.insert('delete from archive_category where archive_id = ?', [ archive_id ], function(err, info) {
                 if (err) {
                     log.error('删除文章旧分类发生异常');
@@ -209,21 +240,21 @@ exports.modify_archive = function(req, res, next) {
                 }
                 cb(null, '');
             });
-        }],
-        updateArchiveCategories:['deleteArchiveCategories',function(cb){//插入新的文章分类
+        } ],
+        updateArchiveCategories : [ 'deleteArchiveCategories', function(cb) {// 插入新的文章分类
             async.forEach(archive_categories, function(category_item, callback) {
                 mysql.insert('insert into archive_category(archive_id, category_id) values(?,?)', [ archive_id, category_item ], function(err, info) {
-                    if(err){
-                        log.error('修改文章：插入新的文章分类出现错误['+archive_id+','+category_item+']');
+                    if (err) {
+                        log.error('修改文章：插入新的文章分类出现错误[' + archive_id + ',' + category_item + ']');
                     }
-                    callback(null,null);
+                    callback(null, null);
                 });
             }, function(err) {
-                cb(null,'');
+                cb(null, '');
             });
-        }]
-        
-    }, function(err, results){
+        } ]
+
+    }, function(err, results) {
         if (err) {
             res.render('notify/notify', {
                 error : '修改文章时发生错误'
@@ -249,23 +280,23 @@ exports.delete_archive = function(req, res, next) {
         });
         return;
     }
-    mysql.update('delete from archive where id = ? and author_id = ?', [ req.params.archive_id, req.session.user.id ], function(err,info){
-        if(err){
-            log.error('删除文章出错:'+info);
+    mysql.update('delete from archive where id = ? and author_id = ?', [ req.params.archive_id, req.session.user.id ], function(err, info) {
+        if (err) {
+            log.error('删除文章出错:' + info);
             res.render('notify/notify', {
                 error : '删除文章出错,请检查您是否为该文章作者或者操作是否出错'
             });
             return;
         }
-        mysql.update('delete from archive_category where archive_id = ?', [req.params.archive_id], function(err, info){
-            if(err){
-                log.error('删除文章[删除分类]出错:'+info);
+        mysql.update('delete from archive_category where archive_id = ?', [ req.params.archive_id ], function(err, info) {
+            if (err) {
+                log.error('删除文章[删除分类]出错:' + info);
                 res.render('notify/notify', {
                     error : '从文章分类中删除这篇文章出错'
                 });
                 return;
             }
-            
+
             res.render('notify/notify', {
                 success : '删除文章成功'
             });
@@ -284,27 +315,30 @@ exports.delete_archive = function(req, res, next) {
 exports.view_archives = function(req, res, next) {
     var category_id = req.params.category_id;
     var user_id = req.params.user_id;
-    mysql.query('select  id,title,content,visit_count,reply_count,author_id,DATE_FORMAT(update_at,"%Y-%m-%d %H:%i:%s") as update_at,DATE_FORMAT(create_at,"%Y-%m-%d %H:%i:%s") as create_at  from archive where author_id = ? and id in (select archive_id from archive_category where category_id = ?) order by update_at desc', [ user_id, category_id ], function(err, archives) {
-        if (err) {
-            res.render('notify/notify', {
-                error : '查找分类下文章出错'
-            });
-            return;
-        }
-        common.initSidebar(user_id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
-            if (err) {
-                res.render('notify/notify', {
-                    error : '查找用户信息出错'
-                });
-                return;
-            }
-            res.render('archive/archives', {
-                result : result,
-                archives : archives
-            });
-            return;
-        });
-    });
+    mysql
+            .query(
+                    'select  id,title,content,visit_count,reply_count,author_id,DATE_FORMAT(update_at,"%Y-%m-%d %H:%i:%s") as update_at,DATE_FORMAT(create_at,"%Y-%m-%d %H:%i:%s") as create_at  from archive where author_id = ? and id in (select archive_id from archive_category where category_id = ?) order by update_at desc',
+                    [ user_id, category_id ], function(err, archives) {
+                        if (err) {
+                            res.render('notify/notify', {
+                                error : '查找分类下文章出错'
+                            });
+                            return;
+                        }
+                        common.initSidebar(user_id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
+                            if (err) {
+                                res.render('notify/notify', {
+                                    error : '查找用户信息出错'
+                                });
+                                return;
+                            }
+                            res.render('archive/archives', {
+                                result : result,
+                                archives : archives
+                            });
+                            return;
+                        });
+                    });
 };
 
 /**

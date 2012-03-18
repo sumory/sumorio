@@ -27,7 +27,10 @@ exports.delete_archive = archive_ctrl.delete_archive;
 exports.view_archives = archive_ctrl.view_archives;
 exports.view_archive = archive_ctrl.view_archive;
 
-
+var reply_ctrl = require('../controller/reply.js');
+exports.create_reply = reply_ctrl.create_reply;
+exports.create_reply2 = reply_ctrl.create_reply2;
+exports.delete_reply = reply_ctrl.delete_reply;
 
 
 

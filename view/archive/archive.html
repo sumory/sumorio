@@ -1,55 +1,163 @@
 <div class="main-right">
-	<ul class="sortable">
-		<li>
-			<div class="right-body">
-					<div class='panel'>
-						<div class='header'>
-							<span class='col_fade'>分类下文章</span>
-						</div>						
-						<div class='inner'>
-							<h3><%= archive.title %></h3>	
-							<div class='sep10'></div>	
-							<div class='topic_content'>
-								<%- archive.content %>
-							</div>
-							<div class='sep10'></div>	
-							<span class='col_fade'>分类：</span>
-							<%for(var cli=0;cli<archive_categories.length;cli++){%>
-								<a class='category_tag_link' href='/archives/<%=archive.author_id%>/<%=archive_categories[cli].id%>'><%=archive_categories[cli].name%></a>
-							<%}%>
-
-							<div class='sep5'></div>	
-							<span class='col_fade'>
-								<a class='dark' href='/user/<%= result.user.name %>'><%= result.user.loginname %></a> 在 <%= archive.create_at %> 发布
-							</span><br/>
-							<span class='col_fade'>
-								<a class='dark' href='/user/<%= result.user.name %>'><%= result.user.loginname %></a> 在 <%= archive.update_at %> 重新编辑
-							</span>
-
-							<span class='sp10'></span>
-	
-							<% if(locals.current_user){ %>
-							<% if(current_user.id==result.user.id){ %>
-							<span class='sp10'></span>
-							<a href='/archive/<%= archive.id %>/edit'><img class='user_icon' src='/img/doc_edit_icon&16.png' title='编辑' /></a>
-							<a href='/archive/<%= archive.id %>/delete' onclick="return deleteConfirm();" class='delete_topic_btn'><img class='user_icon' src='/img/trash_icon&16.png' title='删除' /></a>
-							<% }%>
-							<% } %>
-						</div>
+	<div class="right-body">
+			<div class='panel'>
+				<div class='header'>
+					<span class='col_fade'>分类下文章</span>
+				</div>						
+				<div class='inner'>
+					<h3><%= archive.title %></h3>
+					<div class='sep10'></div>	
+					<div class='topic_content'>
+						<%- archive.content %>
 					</div>
+					<div class='sep10'></div>	
+					<span class='col_fade'>分类：</span>
+					<%for(var cli=0;cli<archive_categories.length;cli++){%>
+						<a class='category_tag_link' href='/archives/<%=archive.author_id%>/<%=archive_categories[cli].id%>'><%=archive_categories[cli].name%></a>
+					<%}%>
+
+					<div class='sep5'></div>	
+					<span class='col_fade'>
+						<a class='dark' href='/user/<%= result.user.loginname %>'><%= result.user.loginname %></a> 在 <%= archive.create_at %> 发布
+					</span><br/>
+					<span class='col_fade'>
+						<a class='dark' href='/user/<%= result.user.loginname %>'><%= result.user.loginname %></a> 在 <%= archive.update_at %> 重新编辑
+					</span>
+
+					<span class='sp10'></span>
+
+					<% if(locals.current_user){ %>
+					<% if(current_user.id==result.user.id){ %>
+					<span class='sp10'></span>
+					<a href='/archive/<%= archive.id %>/edit'><img class='user_icon' src='/img/doc_edit_icon&16.png' title='编辑' /></a>
+					<a href='/archive/<%= archive.id %>/delete' onclick="return deleteConfirm();" class='delete_topic_btn'><img class='user_icon' src='/img/trash_icon&16.png' title='删除' /></a>
+					<% }%>
+					<% } %>
+				</div>
 			</div>
-		</li>
-	</ul>
+			
+			<!-- 回复列表 -->	
+			<% if (archive.replies && archive.replies.length > 0) { %>
+			<div class='sep10'></div>
+			<div class='panel'>
+				<div class='header'>
+					<span class='col_fade'><%= archive.replies.length %> 回复</span>
+				</div>
+				<%- partial('reply/reply', archive.replies) %>
+			</div>
+			<% } %>
+			
+			<!-- 回复输入框-->	
+			<% if (locals.current_user && locals.archive) { %>
+			<div class='sep10'></div>
+			<div class='panel'>
+				<div class='header'>
+					<span class='col_fade'>添加回复</span>
+				</div>
+				<div class='inner'>
+					<form id='reply_form' action='/<%= archive.id %>/reply' method='post'>
+						<textarea class='span8' id="editor"  name='r_content' rows='20' style='width:600px;height:auto;'></textarea>
+						<input type='hidden' name='_csrf' value='<%= csrf %>' />
+						<div class='sep10'></div>
+						<input type='submit' class='btn' value='回复'/>
+						<span class='sp10'></span>
+					</form>
+				</div>
+			</div>
+			<% } %>
+		
+	</div>
 </div>
 <%- partial('user/sidebar',{collections:result,as:'result'}) %>
 
-<script type="text/javascript">
-    //为了在编辑器之外能展示高亮代码
-    SyntaxHighlighter.highlight();
-    function deleteConfirm(){
+
+
+
+<% if (locals.current_user && locals.archive) { %>
+<!-- ajaxupload -->
+<script type='text/javascript' src='/libs/ajax-upload/ajaxupload.js'></script>
+
+<script type='text/javascript'>
+	$(document).ready(function() {
+	    window.UEDITOR_CONFIG.toolbars=[['Bold', 'Italic', 'Underline', '|', 'InsertOrderedList', 'InsertUnorderedList', '|', 'Link', 'Unlink',  'InsertImage', 'HighlightCode']];
+	    
+	    var editor = new baidu.editor.ui.Editor();
+		editor.render('editor');//初始化一级回复的编辑器
+
+		$('.reply_area').mouseover(function(){
+			$(this).find('.reply2_btn').show();
+		});
+		$('.reply_area').mouseout(function(){
+			$(this).find('.reply2_btn').hide();
+		});
+
+
+		$('.delete_reply_btn').live('click', function() {
+			var $me = $(this);
+			if (confirm('确定要删除此回复吗？')) {
+				var reply_id = null;
+				if ($me.hasClass('delete_reply_btn')) {
+					reply_id = $me.parents('.reply_item').attr('reply_id');
+				}
+				var data = {
+					reply_id: reply_id,
+					_csrf: "<%- csrf %>"
+				};
+				$.post('/reply/' + reply_id + '/delete', data, function(data) {
+					if (data.status === 'success') {
+						if($me.hasClass('delete_reply_btn')){
+							$me.parents('.reply_item').remove();	
+						}
+					}
+				}, 'json');	
+			}	
+			return false;
+		});	
+
+		$('.delete_topic_btn').click(function() {
+			if(confirm('确定要删除此话题吗？')) {
+				window.location.href = $(this).attr('href');
+			}
+			return false;
+		});
+
+	});
+</script>
+<% } %>
+
+
+
+
+
+
+
+<script type='text/javascript'>
+	//为了在编辑器之外能展示高亮代码
+	SyntaxHighlighter.highlight();
+
+	$(document).ready(function(){
+		//fancy image
+		$('.topic_content img,.reply_content img').each(function(){
+			if($(this).width > 500){
+				$(this).width(500);
+			}
+			var elem = $('<a class="content_img"></a>');
+			elem.attr('href',$(this).attr('src'));
+			$(this).wrap(elem);		
+		});
+		$('.content_img').fancybox({
+			transitionIn: 'elastic',
+			transitionOut: 'elastic'
+		});
+	});
+	
+	function deleteConfirm(){
         if(confirm('确定要删除吗?删除后将不可恢复')==true)
             return true;
         else
             return false;
     }
 </script>
+<link type='text/css' rel='stylesheet' href='/libs/fancybox/jquery.fancybox-1.3.4.css' />
+<script type='text/javascript' src='/libs/fancybox/jquery.fancybox-1.3.4.pack.js'></script>
+

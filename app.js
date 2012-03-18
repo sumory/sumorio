@@ -76,6 +76,10 @@ app.get('/archive/:archive_id/delete', routes.delete_archive);
 app.get('/archives/:user_id/:category_id', routes.view_archives);
 app.get('/archive/:archive_id', routes.view_archive);
 
+//reply
+app.post('/:archive_id/reply', routes.create_reply);
+app.post('/:archive_id/reply2', routes.create_reply2);
+app.post('/reply/:reply_id/delete', routes.delete_reply);
 
 app.listen(config.app_port);
 console.log("Sumorio is listening on port %d in %s mode", app.address().port, app.settings.env);
