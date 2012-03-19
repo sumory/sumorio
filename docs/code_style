@@ -1,3 +1,4 @@
+1.
 类继承写法，尽管有各种方式来实现继承，但最为推荐的是Node 的标准写法
 
 function Socket(options) {
@@ -9,3 +10,6 @@ function Socket(options) {
 util.inherits(Socket, stream.Stream);
 
 ....待完善
+
+2.
+代码使用eclipse开发，请导入eclipse_js_formatter.xml的格式文件来格式化js文件代码

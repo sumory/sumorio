@@ -33,6 +33,8 @@ exports.delete_reply = reply_ctrl.delete_reply;
 var upload_ctrl = require('../controller/upload.js');
 exports.upload_image = upload_ctrl.upload_image;
 
+var nav_ctrl = require('../controller/nav.js');
+exports.all_navs = nav_ctrl.all_navs;
 
 
 

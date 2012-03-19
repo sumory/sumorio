@@ -84,5 +84,8 @@ app.post('/reply/:reply_id/delete', routes.delete_reply);
 //上传图片
 app.post('/upload/image', routes.upload_image);
 
+//导航相关
+app.post('/nav/all', routes.all_navs);
+
 app.listen(config.app_port);
 console.log("Sumorio is listening on port %d in %s mode", app.address().port, app.settings.env);

@@ -414,7 +414,7 @@ function insertBatch() {
         tmpObj.title = ci.title;
         tmpObj.floatStyle = align;
         tmpObj.data_ue_src = tmpObj.src =ci.url;
-        //修正显示时候的地址数据,如果后台返回的是图片的绝对地址，那么此处无需修正
+        //修正显示时候的地址数据，使用绝对或相对
         //tmpObj.data_ue_src = tmpObj.src = editor.options.imagePath + ci.url;
         imgObjs.push( tmpObj );
     }

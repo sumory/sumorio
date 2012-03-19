@@ -74,15 +74,14 @@ exports.view_archive = function(req, res, next) {
                 }
                 
                 //为一级回复查找其author信息及其子回复的相应信息
-                async.map(archive_replies, 
-                    function(reply_item, callback) {    
+                async.map(archive_replies, function(reply_item, callback) {    
                         mysql.queryOne('select * from user where id = ?', [ reply_item.author_id ], function(err, user) {
                             if (err) {
                                 log.error('查询文章回复的作者信息出错：' + reply_item.author_id);
                             }
                             reply_item.friendly_create_at = Util.format_date(reply_item.create_at, true);
                             reply_item.author = user || {}; 
-                            callback(null,reply_item); 
+                            callback(null,reply_item);
                         });    
                     }, 
                     function(err,archive_replies) {

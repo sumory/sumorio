@@ -24,13 +24,13 @@
 		<div id="header">
 			<div class="wrapper" style="width: 1000px;">
 				<div id="menu_bar">
+					
 					<ul id="menu" class="menu">
+
 						<li><a href="/" class="nav no-icon">社区首页</a></li>
-						<li><a href="/" class="nav no-icon">话题</a></li>
-						<li><a href="/" class="nav no-icon">群组</a></li>
 						<% if(locals.current_user){ %>
-						<li id="user_nav"><a href="/user/<%=current_user.id %>"
-							class="nav"><!-- <img src="/img/avatar.gif"> --><%=current_user.loginname %><span></span></a>
+						<li id="user_nav">
+							<a href="/user/<%=current_user.id %>" class="nav"><%=current_user.loginname %><span></span></a>
 							<ul>
 								<li><a href="/user/<%=current_user.id%>">我的主页</a></li>
 								<li><a href="/user/settings/">帐号设置</a></li>
@@ -43,9 +43,25 @@
 						<%}%>
 
 					</ul>
+					
+					<script>
+					$.ajax({
+				  		   type: "POST",
+						   url: "/nav/all",
+						   success:function(data){
+								var navs = data.navs;
+								for(var nav_index =0; nav_index < navs.length; nav_index++){
+								    $('#user_nav').before('<li><a href="/nav/'+navs[nav_index].id+'" class="nav no-icon">'+navs[nav_index].name+'</a></li>');
+								}
+						   },
+						   error:function(){
+								
+				   		   }
+					});
+				
+					</script>
 					<div id="search">
-						<form id="search_form" method="get"
-							action="/" class="text">
+						<form id="search_form" method="get" action="/" class="text">
 							<input id="query" type="text" size="27" name="q"
 								autocomplete="off" placeholder="搜索话题" value=""
 								class="default_value"><a  style="width:16px;height:17px;" id="search_lens" href="#"
@@ -53,6 +69,7 @@
 								class="lg"><img src="/img/search.gif" alt="搜索"></a>
 						</form>
 					</div>
+					
 				</div>
 			</div>
 		</div>
