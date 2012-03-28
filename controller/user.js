@@ -1,9 +1,10 @@
 var log = require('../lib/log.js');
 var config = require('../config.js').config;
 var common = require('./common.js');
+var mysql = require('../lib/mysql.js');
 
 /**
- * 到用户首页
+ * 到所选用户首页
  * 
  * @param req
  * @param res
@@ -21,3 +22,5 @@ exports.index = function(req, res, next) {
         });
     });
 };
+
+

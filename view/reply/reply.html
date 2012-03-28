@@ -1,6 +1,6 @@
 <div class='cell reply_area reply_item' id='reply<%= indexInCollection+1 %>' reply_id='<%= reply.id %>'>
 	<% if(reply.author.avatar){ %>
-	<div class='user_avatar'><a href='/user/<%= reply.author.id %>'><img src='/img/<%= reply.author.avatar %>' title='<%= reply.author.loginname %>' /></a></div>
+	<div class='user_avatar'><a href='/user/<%= reply.author.id %>'><img src='<%= reply.author.avatar %>' title='<%= reply.author.loginname %>' /></a></div>
 	<% }else{ %>
 	<div class='user_avatar'><a href='/user/<%= reply.author.id %>'><img src='/img/avatar.png' title='<%= reply.author.loginname %>' /></a></div>
 	<% } %>

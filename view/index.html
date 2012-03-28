@@ -1,13 +1,13 @@
 
 
 
-<div class='panel' style="width: 600px; margin: auto; margin-top: 50px;height:300px;">
+<div class='panel' style="width: 100%; margin: auto; margin-top: 50px;height:300px;">
 	<div class='inner'>
 		<div class='sep10'></div>
 		<div class='sep10'></div>
-		
+		<!-- 
 			<div class='control-group'>
-				<%-welcome%>
+				
 				<br>
 				sumorio(summary => input | ouput)<br/>
 				sumorio是基于nodejs开发的社区系统, 现已完成个人部分功能, 社区功能正在开发中...
@@ -27,6 +27,28 @@
 				}
 				%>
 			</div>
-			
+		 -->
+		
+		<% for(var i =0;i< locals.users.length;i++){
+			var user = locals.users[i];
+		%>
+		<div class='user' style="background-color:#ffffff;">
+			<div>
+				<% if(user.avatar){ %>
+				<a href='/user/<%= user.loginname %>'><img class='user_avatar' src='<%= user.avatar %>' title='<%= user.loginname %>' /></a>
+				<% }else{ %>
+				<a href='/user/<%= user.loginname %>'><img class='user_avatar' src='/img/avatar.png' title='<%= user.loginname %>' /></a>
+				<% } %>
+				<span class='user_name'><a class='dark' href='/user/<%= user.id %>'><%= user.loginname %></a></span>
+				<div class='sep5'></div>
+				<span class='col_fade'></span>
+				<span class='sp5'></span>
+				<span class='col_fade'></span>
+			</div>
+			<div class='sep10'></div>
+		</div>	
+		<%}%>
+		
+		
 	</div>
 </div>
