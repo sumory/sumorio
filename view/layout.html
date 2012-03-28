@@ -33,7 +33,7 @@
 							<a href="/user/<%=current_user.id %>" class="nav"><%=current_user.loginname %><span></span></a>
 							<ul>
 								<li><a href="/user/<%=current_user.id%>">我的主页</a></li>
-								<li><a href="/user/settings/">帐号设置</a></li>
+								<!-- <li><a href="/user/settings/">帐号设置</a></li>  -->
 								<li class="divider"><a href="/signout">退出登录</a></li>
 							</ul>
 						</li> 
@@ -61,6 +61,7 @@
 				
 					</script>
 					<div id="search">
+					<!--  
 						<form id="search_form" method="get" action="/" class="text">
 							<input id="query" type="text" size="27" name="q"
 								autocomplete="off" placeholder="搜索话题" value=""
@@ -68,6 +69,7 @@
 								onclick="$(&#39;search_form&#39;).submit();return false;"
 								class="lg"><img src="/img/search.gif" alt="搜索"></a>
 						</form>
+					-->
 					</div>
 					
 				</div>

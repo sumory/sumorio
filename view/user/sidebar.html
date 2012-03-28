@@ -10,11 +10,11 @@ var categories = result.categories;
 	<div class='user_card'>
 		<div class='user_card_left'>
 			<h1><a href="/user/<%=user.id%>"><%= user.loginname%></a></h1>
-			<p><a href="/followers/">粉丝<span>0</span>个</a></p>
-			<p><a href="/following/">关注<span>2</span>人</a></p>
+			<!--  <p><a href="/followers/">粉丝<span>0</span>个</a></p>
+			<p><a href="/following/">关注<span>2</span>人</a></p>-->
 		</div>
 		<div class='user_card_right'>
-			<a href="/user/<%=user.id%>" title="echover" class="img x"><img src="/img/avatar.png"></a>
+			<a href="/user/<%=user.id%>" title="echover" class="img x"><img src="<%=user.avatar%>"></a>
 		</div>
 	</div>
 

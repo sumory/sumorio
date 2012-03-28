@@ -97,7 +97,7 @@ exports.signup = function(req, res, next) {
             // create gavatar
             var avatar_url = 'http://www.gravatar.com/avatar/' + common.md5(email) + '?size=48';
 
-            mysql.insert('insert into user(loginname,email,pwd,create_at) values(?,?,?,?)', [ loginname, email, pass, new Date() ], function(err, info) {
+            mysql.insert('insert into user(loginname,email,pwd,create_at,avatar) values(?,?,?,?,?)', [ loginname, email, pass, new Date(), avatar_url ], function(err, info) {
                 if (err)
                     return next(err);
                 res.render('sign/signup', {
