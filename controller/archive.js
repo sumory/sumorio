@@ -316,6 +316,40 @@ exports.delete_archive = function(req, res, next) {
 };
 
 /**
+ * 查看用户的文章[不按分类]
+ * 
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.view_user_archives = function(req, res, next) {
+    var user_id = req.params.user_id;
+    
+    mysql.query('select  id,title,content,visit_count,reply_count,author_id,DATE_FORMAT(update_at,"%Y-%m-%d %H:%i:%s") as update_at,DATE_FORMAT(create_at,"%Y-%m-%d %H:%i:%s") as create_at  from archive where author_id = ? order by update_at desc', [ user_id ], function(err, archives) {
+        if (err) {
+            res.render('notify/notify', {
+                error : '查找用户的所有文章出错'
+            });
+            return;
+        }
+        common.initSidebar(user_id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
+            if (err) {
+                res.render('notify/notify', {
+                    error : '查找用户信息出错'
+                });
+                return;
+            }
+            res.render('archive/user_archives', {
+                result : result,
+                archives : archives
+            });
+            return;
+        });
+    });
+};
+
+
+/**
  * 查看用户某分类下文章
  * 
  * @param req

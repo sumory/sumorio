@@ -74,6 +74,7 @@ app.get('/archive/:archive_id/edit', routes.edit_archive);
 app.post('/archive/:archive_id/modify', routes.modify_archive);
 app.get('/archive/:archive_id/delete', routes.delete_archive);
 app.get('/archives/:user_id/:category_id', routes.view_archives);
+app.get('/:user_id/archives', routes.view_user_archives);
 app.get('/archive/:archive_id', routes.view_archive);
 
 //reply

@@ -12,7 +12,7 @@ var mysql = require('../lib/mysql.js');
  */
 exports.index = function(req, res, next) {
     var user_id = req.params.id;
-
+    /*
     common.initSidebar(user_id, function(err, result) {
         if (err) {
             return next(err);
@@ -21,6 +21,8 @@ exports.index = function(req, res, next) {
             result : result
         });
     });
+    */
+    res.redirect('/'+user_id+'/archives');
 };
 
 

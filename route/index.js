@@ -24,6 +24,7 @@ exports.modify_archive = archive_ctrl.modify_archive;
 exports.delete_archive = archive_ctrl.delete_archive;
 exports.view_archives = archive_ctrl.view_archives;
 exports.view_archive = archive_ctrl.view_archive;
+exports.view_user_archives = archive_ctrl.view_user_archives;
 
 var reply_ctrl = require('../controller/reply.js');
 exports.create_reply = reply_ctrl.create_reply;
