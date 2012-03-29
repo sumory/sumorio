@@ -41,14 +41,12 @@
 				<% } %>
 				<span class='user_name'><a class='dark' href='/user/<%= user.id %>'><%= user.loginname %></a></span>
 				<div class='sep5'></div>
-				<span class='col_fade'></span>
-				<span class='sp5'></span>
-				<span class='col_fade'></span>
+				<span class='col_fade'>文章数: <%=user.archive_count?user.archive_count:0%></span>
+	
 			</div>
 			<div class='sep10'></div>
 		</div>	
 		<%}%>
-		
-		
+
 	</div>
 </div>

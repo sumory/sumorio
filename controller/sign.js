@@ -153,7 +153,7 @@ exports.signin = function(req, res, next) {
             }
 
             gen_session(user, res);// store session cookie
-            console.log('gen_session->redirect');
+            //console.log('gen_session->redirect');
             res.redirect('home');
         });
 
