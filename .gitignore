@@ -1,10 +1,5 @@
-sumorio/test/
-sumorio/logs/
-sumorio/.project/
-sumorio/.settings/
-sumorio/.gitignore
-test
-logs
-.project
-.settings
-.gitignore
+/.project
+/.git
+/test
+/logs
+/.git
