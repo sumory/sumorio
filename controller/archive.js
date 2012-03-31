@@ -386,6 +386,12 @@ exports.view_archives = function(req, res, next) {
                 });
                 return;
             }
+            if(!(result.user)){//查不到user
+                res.render('notify/notify', {
+                    error : '查找用户信息出错'
+                });
+                return;
+            }
             res.render('archive/archives', {
                 result : result,
                 archives : archives
