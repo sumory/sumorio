@@ -339,6 +339,12 @@ exports.view_user_archives = function(req, res, next) {
                 });
                 return;
             }
+            if(!(result.user)){//查不到user
+                res.render('notify/notify', {
+                    error : '查找用户信息出错'
+                });
+                return;
+            }
             res.render('archive/user_archives', {
                 result : result,
                 archives : archives
@@ -369,6 +375,12 @@ exports.view_archives = function(req, res, next) {
         }
         common.initSidebar(user_id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
             if (err) {
+                res.render('notify/notify', {
+                    error : '查找用户信息出错'
+                });
+                return;
+            }
+            if(!(result.user)){//查不到user
                 res.render('notify/notify', {
                     error : '查找用户信息出错'
                 });

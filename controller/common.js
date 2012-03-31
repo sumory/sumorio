@@ -61,10 +61,10 @@ exports.initSidebar = function initSidebar(user_id, callback) {
             mysql.queryOne("select * from user where id = ?", [ user_id ], function(err, user) {
                 if (err) {
                     log.error('查询用户时发生异常');
-                    cb(null, {});
+                    cb(null, undefined);
                 }
                 if (!user) {
-                    cb(null, {});
+                    cb(null, undefined);
                 }
                 cb(null, user);
             });
@@ -73,7 +73,7 @@ exports.initSidebar = function initSidebar(user_id, callback) {
             mysql.query('select * from category where user_id = ? order by sequence asc', [ user_id ], function(err, categories) {
                 if (err) {
                     log.error('查询文章分类时发生异常');
-                    cb(null, []);
+                    cb(null, undefined);
                 }
                 var category_ids = Array.prototype.map.call(categories, function(item) {
                     return item.id;
@@ -90,7 +90,7 @@ exports.initSidebar = function initSidebar(user_id, callback) {
                     });
                 }
                 else
-                    cb(null, []);
+                    cb(null, undefined);
             });
         },
     }, function(err, result) {// results is now equals to: {user: {...},categories: [{...},{...}]}
