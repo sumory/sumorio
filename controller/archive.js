@@ -38,7 +38,7 @@ exports.view_archive = function(req, res, next) {
                     log.error('查看文章，通过文章id查找用户信息错误');
                     cb(null, {});
                 }
-                if (!result) {
+                if (!result || !result.user) {
                     log.error('查看文章，通过文章id查找不到用户');
                     cb(null, {});
                 }
@@ -219,7 +219,7 @@ exports.modify_archive = function(req, res, next) {
     if (req.body.archive_categories != '') {
         archive_categories = req.body.archive_categories.split(',');
     }
-    var updateDate = new Date();
+    var updateDate = Util.format_date(new Date());
 
     async.auto({
         updateArchive : function(cb) {// 更新文章基本信息
@@ -339,6 +339,12 @@ exports.view_user_archives = function(req, res, next) {
                 });
                 return;
             }
+            if(!(result.user)){//查不到user
+                res.render('notify/notify', {
+                    error : '查找用户信息出错'
+                });
+                return;
+            }
             res.render('archive/user_archives', {
                 result : result,
                 archives : archives
@@ -369,6 +375,12 @@ exports.view_archives = function(req, res, next) {
         }
         common.initSidebar(user_id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
             if (err) {
+                res.render('notify/notify', {
+                    error : '查找用户信息出错'
+                });
+                return;
+            }
+            if(!(result.user)){//查不到user
                 res.render('notify/notify', {
                     error : '查找用户信息出错'
                 });
@@ -469,7 +481,7 @@ exports.create_archive = function(req, res, next) {
             });
         }
         else {
-            var insertDate = new Date();
+            var insertDate = Util.format_date(new Date());
             mysql.insert('insert into archive(title,content,author_id,create_at,update_at) values(?,?,?,?,?)', [ title, content, req.session.user.id, insertDate, insertDate ], function(err, info) {
                 if (err) {
                     res.render('notify/notify', {

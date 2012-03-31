@@ -27,6 +27,7 @@ exports.create_reply = function(req,res,next){
 	}
 	
 	var create_at = new Date();//创建时间
+	create_at = Util.format_date(new Date());
 	async.parallel({
         info : function(cb) {
             mysql.update('insert into reply(content,author_id,archive_id,create_at,update_at) values(?,?,?,?,?)',[content, req.session.user.id, archive_id, create_at, create_at], function(err, info){
