@@ -1,5 +1,6 @@
 var user_ctrl = require('../controller/user.js');
 exports.user_index = user_ctrl.index;
+exports.users = user_ctrl.users;
 
 var site_ctrl = require('../controller/site.js');
 exports.site_index = site_ctrl.index;
@@ -38,7 +39,12 @@ var nav_ctrl = require('../controller/nav.js');
 exports.all_navs = nav_ctrl.all_navs;
 
 
-
+var follow_ctrl = require('../controller/follow.js');
+exports.follow = follow_ctrl.follow;
+exports.unfollow = follow_ctrl.unfollow;
+exports.isfollow = follow_ctrl.isfollow;
+exports.view_followings = follow_ctrl.view_followings;
+exports.view_followers = follow_ctrl.view_followers;
 
 
 

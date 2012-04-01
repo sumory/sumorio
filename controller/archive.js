@@ -1,7 +1,6 @@
 var async = require('async');
 var check = require('validator').check;
 var sanitize = require('validator').sanitize;
-var Markdown = require('node-markdown').Markdown;
 var mysql = require('../lib/mysql.js');
 var common = require('./common.js');
 var category_ctrl = require('./category.js');
@@ -339,6 +338,9 @@ exports.view_user_archives = function(req, res, next) {
                 });
                 return;
             }
+            //console.log('----------------------');
+            //console.log(result);
+            
             if(!(result.user)){//查不到user
                 res.render('notify/notify', {
                     error : '查找用户信息出错'

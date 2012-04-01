@@ -28,6 +28,7 @@
 					<ul id="menu" class="menu">
 
 						<li><a href="/" class="nav no-icon">社区首页</a></li>
+						<li><a href="/users" class="nav no-icon">用户</a></li>
 						<% if(locals.current_user){ %>
 						<li id="user_nav">
 							<a href="/user/<%=current_user.id %>" class="nav"><%=current_user.loginname %><span></span></a>

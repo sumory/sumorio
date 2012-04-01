@@ -1,52 +1,22 @@
 
 
+<div class="main-right">
+			<div class="right-body">
 
-<div class='panel' style="width: 100%; margin: auto; margin-top: 50px;height:300px;">
-	<div class='inner'>
-		<div class='sep10'></div>
-		<div class='sep10'></div>
-		<!-- 
-			<div class='control-group'>
-				
-				<br>
-				sumorio(summary => input | ouput)<br/>
-				sumorio是基于nodejs开发的社区系统, 现已完成个人部分功能, 社区功能正在开发中...
-				<br><br><br>
-				<% 
-				var userId=0;
-				if(locals.current_user){ 
-				 userId=current_user.id;
-				%>
-				<b><a href='/user/<%=userId%>'>到我的主页</a></b>
-				<%
-				}
-				else{
-				%>
-				<b><a href='/signin'>请先登录</a></b>
-				<%
-				}
-				%>
-			</div>
-		 -->
-		
-		<% for(var i =0;i< locals.users.length;i++){
-			var user = locals.users[i];
-		%>
-		<div class='user' style="background-color:#ffffff;">
-			<div>
-				<% if(user.avatar){ %>
-				<a href='/user/<%= user.loginname %>'><img class='user_avatar' src='<%= user.avatar %>' title='<%= user.loginname %>' /></a>
-				<% }else{ %>
-				<a href='/user/<%= user.loginname %>'><img class='user_avatar' src='/img/avatar.png' title='<%= user.loginname %>' /></a>
-				<% } %>
-				<span class='user_name'><a class='dark' href='/user/<%= user.id %>'><%= user.loginname %></a></span>
-				<div class='sep5'></div>
-				<span class='col_fade'>文章数: <%=user.archive_count?user.archive_count:0%></span>
+
+					<div class='panel'>
+						<div class='header'>
+							<span class='col_fade'>所有文章</span>
+						</div>
+						<%
+						if(archives && archives.length > 0){
+						%>
+						<%- partial('archive/archive_item',{collection:archives,as:'archive'}) %>
+						<%}else{%>
+						<p class='col_fade' style="margin:20px;">暂无文章</p>
+						
+						<%}%>
+					</div>
 	
 			</div>
-			<div class='sep10'></div>
-		</div>	
-		<%}%>
-
-	</div>
 </div>

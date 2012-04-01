@@ -1,0 +1,38 @@
+<!-- 用户的关注人和粉丝列表 -->
+
+<div class="main-right">
+<div class="right-body">
+	<div class='panel'>
+		<div class='header'>
+			<span class='col_fade'><%=locals.title%></span>
+		</div>
+		<div class='inner'>
+			
+				<% for(var i =0;i< locals.users.length;i++){ var user =
+				locals.users[i]; %>
+				<div class='user' style="background-color: #ffffff;">
+					<div>
+						<% if(user.avatar){ %> <a href='/user/<%= user.loginname %>'><img
+							class='user_avatar' src='<%= user.avatar %>'
+							title='<%= user.loginname %>' /></a> 
+						<% }else{ %> 
+						<a href='/user/<%= user.loginname %>'>
+							<img class='user_avatar' src='/img/avatar.png' title='<%= user.loginname %>' />
+						</a>
+					    <% } %> 
+					    <span class='user_name'><a href='/user/<%= user.id %>'><%= user.loginname %></a></span>
+						<div class='sep5'></div>
+						<span class='col_fade'>文章数:<%=user.archive_count?user.archive_count:0%></span>
+
+					</div>
+					<div class='sep10'></div>
+				</div>
+				<%}%>
+
+			</div>
+		</div>
+	</div>
+</div>
+<%- partial('user/sidebar',{collections:result,as:'result'}) %>
+
+
