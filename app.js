@@ -66,6 +66,7 @@ app.get('/category/:category_id/delete', routes.delete_category);
 
 // 用户相关
 app.get('/user/:id', routes.user_index);
+app.get('/users', routes.users);
 
 // 文章相关
 app.get('/archive/create', routes.create_archive);
@@ -77,6 +78,7 @@ app.get('/archives/:user_id/:category_id', routes.view_archives);
 app.get('/:user_id/archives', routes.view_user_archives);
 app.get('/archive/:archive_id', routes.view_archive);
 
+
 //reply
 app.post('/:archive_id/reply', routes.create_reply);
 app.post('/:archive_id/reply2', routes.create_reply2);
@@ -87,6 +89,14 @@ app.post('/upload/image', routes.upload_image);
 
 //导航相关
 app.post('/nav/all', routes.all_navs);
+
+
+//follow相关
+app.post('/follow/:to_follow_id', routes.follow);
+app.post('/unfollow/:to_unfollow_id', routes.unfollow);
+app.post('/isfollow/:user_id', routes.isfollow);
+app.get('/:user_id/following', routes.view_followings);
+app.get('/:user_id/follower', routes.view_followers);
 
 app.listen(config.app_port);
 console.log("Sumorio is listening on port %d in %s mode", app.address().port, app.settings.env);

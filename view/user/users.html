@@ -1,0 +1,28 @@
+
+
+
+<div class='panel' style="width: 100%; margin: auto; margin-top: 50px;height:300px;">
+	<div class='inner'>
+		<div class='sep10'></div>
+		<div class='sep10'></div>
+		<% for(var i =0;i< locals.users.length;i++){
+			var user = locals.users[i];
+		%>
+		<div class='user' style="background-color:#ffffff;">
+			<div>
+				<% if(user.avatar){ %>
+				<a href='/user/<%= user.loginname %>'><img class='user_avatar' src='<%= user.avatar %>' title='<%= user.loginname %>' /></a>
+				<% }else{ %>
+				<a href='/user/<%= user.loginname %>'><img class='user_avatar' src='/img/avatar.png' title='<%= user.loginname %>' /></a>
+				<% } %>
+				<span class='user_name'><a class='dark' href='/user/<%= user.id %>'><%= user.loginname %></a></span>
+				<div class='sep5'></div>
+				<span class='col_fade'>文章数: <%=user.archive_count?user.archive_count:0%></span>
+	
+			</div>
+			<div class='sep10'></div>
+		</div>	
+		<%}%>
+
+	</div>
+</div>

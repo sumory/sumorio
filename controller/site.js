@@ -1,25 +1,23 @@
 var config = require('../config').config;
 var mysql = require('../lib/mysql.js');
 
+/**
+ * 网站首页
+ */
 exports.index = function(req, res, next) {
 
-    mysql.query('select * from user', function(err,users){//得到所有的用户
-        mysql.query('select count(id) as count, author_id from archive group by author_id', function(err,result){
-            for(var i = 0; i < users.length; i++){
-                for(var j=0;j<result.length;j++){
-                    if(users[i].id==result[j].author_id){
-                        users[i].archive_count = result[j].count;
-                        break;
-                    }
+    mysql.query('select  id,title,content,visit_count,reply_count,author_id,DATE_FORMAT(update_at,"%Y-%m-%d %H:%i:%s") as update_at,DATE_FORMAT(create_at,"%Y-%m-%d %H:%i:%s") as create_at  from archive order by update_at desc',
+            function(err, archives) {
+                if (err) {
+                    res.render('notify/notify', {
+                        error : '查找所有文章出错'
+                    });
+                    return;
                 }
-            }
-            
-            res.render('index', {
-                users : users
-            });
-            return;
-        });
-        
+                res.render('index', {
+                    archives : archives
+                });
+                return;
     });
-    
+
 };

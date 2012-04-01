@@ -5,7 +5,7 @@ exports.config = {
 	session_secret : 'sumorio_secret',
 	auth_cookie_name : 'sumorio_secret',
 	app_port : 8081,
-	version : '0.1.2 beta',
+	version : '0.1.3 beta',
 
 	//logfiles directory
 	logDirectory : __dirname + "/logs/",

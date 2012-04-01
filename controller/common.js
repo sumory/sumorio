@@ -57,6 +57,32 @@ exports.md5 = function md5(str) {
 exports.initSidebar = function initSidebar(user_id, callback) {
 
     async.parallel({// 并行执行
+        followings : function(cb) {//关注
+            mysql.queryOne("select count(following_id) as count from follow where user_id = ?", [ user_id ], function(err, count) {
+                if (err) {
+                    log.error('查询用户关注数发生异常');
+                    cb(null, {count:0});
+                }
+                else if (!count) {
+                    cb(null, {count:0});
+                }
+                else
+                    cb(null, count);
+            });
+        },
+        followers : function(cb) {//粉丝
+            mysql.queryOne("select count(user_id) as count from follow where following_id = ?", [ user_id ], function(err, count) {              
+                if (err) {
+                    log.error('查询用户粉丝数发生异常');
+                    cb(null, {count:0});
+                }
+                else if (count == null) {
+                    cb(null, {count:0});
+                }
+                else
+                    cb(null, count);
+            });
+        },
         user : function(cb) {
             mysql.queryOne("select * from user where id = ?", [ user_id ], function(err, user) {
                 if (err) {
@@ -94,6 +120,7 @@ exports.initSidebar = function initSidebar(user_id, callback) {
             });
         },
     }, function(err, result) {// results is now equals to: {user: {...},categories: [{...},{...}]}
+        //console.log(result);
         callback(err, result);
     });
 };

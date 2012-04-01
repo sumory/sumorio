@@ -10,11 +10,11 @@ var categories = result.categories;
 	<div class='user_card'>
 		<div class='user_card_left'>
 			<h1><a href="/user/<%=user.id%>"><%= user.loginname%></a></h1>
-			<!--  <p><a href="/followers/">粉丝<span>0</span>个</a></p>
-			<p><a href="/following/">关注<span>2</span>人</a></p>-->
+			<p><a href="/<%=user.id%>/follower">粉丝： <span><%=result.followers.count%></span>个</a></p>
+			<p><a href="/<%=user.id%>/following">关注： <span><%=result.followings.count%></span>人</a></p>
 		</div>
 		<div class='user_card_right'>
-			<a href="/user/<%=user.id%>" title="echover" class="img x"><img src="<%=user.avatar%>"></a>
+			<a href="/user/<%=user.id%>" title="echover" class="img x"><img style="width:60px;" src="<%=user.avatar%>"></a>
 		</div>
 	</div>
 
@@ -22,11 +22,13 @@ var categories = result.categories;
 	<br/>
 	
 	<% if(locals.current_user && (locals.current_user.id == user.id)){%>
-	<div style="height:100px;margin-bottom:30px;">
-	<a href="/archive/create" class="btn wbtn"><strong>发布文章</strong><span></span></a>
+	<div style="height:100px;margin-bottom:30px;">	
+		<a href="/archive/create" class="btn wbtn fr"><strong>发布文章</strong><span></span></a>
 	</div>
 	<%}else{%>
-	<div style="height:50px;margin-bottom:30px;"></div>
+	<div style="height:100px;margin-bottom:30px;" id ='follow_area'>
+		<a href='javascript:void(0)' onclick="follow(<%=user.id%>);" class="btn btn-success fr">+&nbsp;加关注</a>
+	</div>
 	<%}%>
 	
 	
@@ -47,13 +49,52 @@ var categories = result.categories;
 	</ol>
 </div>
 
-<!-- 
-<div id="ctx_bar">
-	<p class="bar-links" style="font-size:1.4em">
-		<span class="selected">文章</span>&nbsp;·&nbsp;<a href="/pins/">关注</a>&nbsp;·&nbsp;<a href="/likes/">粉丝</a>
-	</p>
-	<div id="BoardButton">
-		<a id="boards_sort" href="/#" onclick="return false;" class="btn wbtn"><strong>更多&gt;&gt;</strong><span></span></a>
-	</div>
-</div>
- -->
+
+<script>
+	$(document).ready(function() {
+	    
+	    $.ajax({//是否关注了此人
+			type: "POST",
+			url: "/isfollow/"+<%=user.id%>,
+			success:function(data){
+			    if(data.flag == 'success')//已关注了此人
+					$('#follow_area').html('<a href="javascript:void(0)" onclick="unfollow('+<%=user.id%>+');"  class="btn wbtn fr">取消关注</a>');
+			    else
+			        $('#follow_area').html('<a href="javascript:void(0)" onclick="follow('+<%=user.id%>+');" class="btn btn-success fr">+&nbsp;加关注</a>');
+			},
+		  	error:function(){}
+		});
+	});
+	
+	function follow(to_follow_id){
+		$.ajax({
+			type: "POST",
+			url: "/follow/"+to_follow_id,
+			success:function(data){
+			    if(data.flag == 'success')
+					$('#follow_area').html('<a href="javascript:void(0)" onclick="unfollow('+to_follow_id+');"  class="btn wbtn fr">取消关注</a>');
+			    else if(data.flag == 'fail')
+			        alert(data.info);
+			    else
+			        alert('发生未知错误');
+			},
+		  	error:function(){alert('不能发送关注请求');}
+		});
+	}
+	
+	function unfollow(to_unfollow_id){
+		$.ajax({
+			type: "POST",
+			url: "/unfollow/"+to_unfollow_id,
+			success:function(data){
+			    if(data.flag == 'success')
+			        $('#follow_area').html('<a href="javascript:void(0)" onclick="follow('+to_unfollow_id+');" class="btn btn-success fr">+&nbsp;加关注</a>');
+			    else if(data.flag == 'fail')
+			        alert(data.info);
+			    else
+			        alert('发生未知错误');
+			},
+		  	error:function(){alert('不能发送取消关注请求');}
+		});
+	}
+</script>

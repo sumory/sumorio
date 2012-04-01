@@ -1,10 +1,10 @@
 /*
 MySQL Data Transfer
-Source Host: 192.168.20.119
+Source Host: 192.168.20.110
 Source Database: sumorio
-Target Host: 192.168.20.119
+Target Host: 192.168.20.110
 Target Database: sumorio
-Date: 2012/3/19 12:32:08
+Date: 2012/4/1 18:28:34
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,7 +25,7 @@ CREATE TABLE `archive` (
   `last_reply_at` datetime DEFAULT '1970-01-01 00:00:00',
   `content_is_html` int(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for archive_category
@@ -52,7 +52,18 @@ CREATE TABLE `category` (
   `sequence` int(4) DEFAULT '0',
   `user_id` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Table structure for follow
+-- ----------------------------
+CREATE TABLE `follow` (
+  `user_id` int(11) NOT NULL,
+  `following_id` int(11) NOT NULL,
+  `create_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`user_id`,`following_id`),
+  KEY `index_follow_id` (`user_id`,`following_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for nav
@@ -62,7 +73,7 @@ CREATE TABLE `nav` (
   `name` varchar(30) DEFAULT '',
   `sequence` int(4) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for reply
@@ -76,7 +87,7 @@ CREATE TABLE `reply` (
   `update_at` datetime DEFAULT '1970-01-01 00:00:00',
   `content_is_html` int(11) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for user
@@ -87,15 +98,12 @@ CREATE TABLE `user` (
   `pwd` varchar(100) DEFAULT '',
   `email` varchar(100) DEFAULT '' COMMENT '邮箱',
   `create_at` datetime DEFAULT '1970-01-01 00:00:00',
-  `avatar` varchar(200) DEFAULT '',
+  `avatar` varchar(255) DEFAULT '/img/avatar.png',
   PRIMARY KEY (`id`),
   KEY `index_user_id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records 
 -- ----------------------------
-INSERT INTO `nav` VALUES ('5', 'java', '0');
-INSERT INTO `nav` VALUES ('6', 'nodejs', '0');
-INSERT INTO `nav` VALUES ('7', '系统设计', '0');
-INSERT INTO `user` VALUES ('12', 'sumory', 'e10adc3949ba59abbe56e057f20f883e', 'sdf@gmail.com', '2012-03-19 03:49:06', '');
+INSERT INTO `user` VALUES ('14', 'sumory', 'e10adc3949ba59abbe56e057f20f883e', 'sumory.wu@gmail.com', '2012-04-01 10:27:58', 'http://www.gravatar.com/avatar/93e212fcdf7e1b0199f3ccbad0a27c13?size=48');
