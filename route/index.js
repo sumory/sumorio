@@ -1,3 +1,4 @@
+
 var user_ctrl = require('../controller/user.js');
 exports.user_index = user_ctrl.index;
 exports.users = user_ctrl.users;
@@ -45,9 +46,6 @@ exports.unfollow = follow_ctrl.unfollow;
 exports.isfollow = follow_ctrl.isfollow;
 exports.view_followings = follow_ctrl.view_followings;
 exports.view_followers = follow_ctrl.view_followers;
-
-
-
 
 
 
