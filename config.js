@@ -4,7 +4,7 @@ exports.config = {
 	host : 'http://127.0.0.1',
 	session_secret : 'sumorio_secret',
 	auth_cookie_name : 'sumorio_secret',
-	app_port : 8080,
+	app_port : 8081,
 	version : '0.1.2 beta',
 
 	//logfiles directory

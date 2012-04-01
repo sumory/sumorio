@@ -3,6 +3,7 @@
 			<div class='panel'>
 				<div class='header'>
 					<span class='col_fade'>分类下文章</span>
+					<a href="javacript:void(0)" onclick="full_screen();">全屏浏览</a>
 				</div>						
 				<div class='inner'>
 					<h3><%= archive.title %></h3>
@@ -12,7 +13,7 @@
 					</div>
 					<div class='sep10'></div>	
 					<span class='col_fade'>分类：</span>
-					<%for(var cli=0;cli<archive_categories.length;cli++){%>
+					<%for(var cli=0;cli < archive_categories.length;cli++){%>
 						<a class='category_tag_link' href='/archives/<%=archive.author_id%>/<%=archive_categories[cli].id%>'><%=archive_categories[cli].name%></a>
 					<%}%>
 
