@@ -240,6 +240,7 @@ exports.modify_archive = function(req, res, next) {
             });
         } ],
         updateArchiveCategories : [ 'deleteArchiveCategories', function(cb) {// 插入新的文章分类
+            
             async.forEach(archive_categories, function(category_item, callback) {
                 mysql.insert('insert into archive_category(archive_id, category_id) values(?,?)', [ archive_id, category_item ], function(err, info) {
                     if (err) {

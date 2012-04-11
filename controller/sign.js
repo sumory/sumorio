@@ -197,7 +197,7 @@ exports.auth_user = function(req, res, next) {
         var auth = auth_token.split('\t');
         var user_id = auth[0];
 
-        console.log('...调用auth_user');
+        //console.log('...调用auth_user');
         mysql.queryOne("select * from user where id = ?", [ user_id ], function(err, user) {
             if (err)
                 return next(err);

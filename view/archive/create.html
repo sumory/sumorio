@@ -11,7 +11,7 @@ var categories=locals.categories;
 			<div class='header'>
 				<span class='col_fade'>发布文章</span>
 			</div>
-			<form id='create_archive_form' action='/archive/create' method='post'  onsubmit="return check();">
+			<form id='create_archive_form' action='/archive/create' method='post'  onSubmit="return check();">
 			<div class='inner'>
 				<%if(locals.edit_error){%>
 				<div class="alert alert-error" >	
@@ -63,42 +63,36 @@ var categories=locals.categories;
 
 
 	<script type='text/javascript'>
-		
-
-		$(document).ready(function(){
-		    
-		    window.UEDITOR_CONFIG.minFrameHeight=500;
-			var editor = new baidu.editor.ui.Editor();
-			editor.render('editor');
-			
-		    function check(){
-		        editor.sync();//同步
-		        var values=[];
-				$('.tag_selectable').each(function(){
-					if($(this).hasClass('tag_select')){
-						values.push($(this).attr('tag_id'));
-					}
-				});
-				$('#archive_categories').val(values);
-		   		if(document.getElementById('title').value.length >100 || document.getElementById('title').value.length <8){
-		   		 	alert('标题字数须在8-100之间');
-		   		    return false;
-		   		}
-		   		else if(document.getElementById('archive_categories').value==''){
-		   		 	alert('请至少选择一个分类');
-		   		    return false;
-		   		}
-		   		else{
-		   		 	return true;
-		   		}
-		    }
-		    
-		    
-			$('.tag_selectable').click(function(){
-				$(this).toggleClass('tag_select');
-			});
+		window.UEDITOR_CONFIG.minFrameHeight=500;
+		var editor = new baidu.editor.ui.Editor();
+		editor.render('editor');
 	
+		$('.tag_selectable').click(function(){
+			$(this).toggleClass('tag_select');
 		});
+		
+		function check(){
+	        editor.sync();//同步
+	        var values=[];
+			$('.tag_selectable').each(function(){
+				if($(this).hasClass('tag_select')){
+					values.push($(this).attr('tag_id'));
+				}
+			});
+			$('#archive_categories').val(values);
+	   		if(document.getElementById('title').value.length >100 || document.getElementById('title').value.length <8){
+	   		 	alert('标题字数须在8-100之间');
+	   		    return false;
+	   		}
+	   		else if(document.getElementById('archive_categories').value==''){
+	   		 	alert('请至少选择一个分类');
+	   		    return false;
+	   		}
+	   		else{
+	   		 	return true;
+	   		}
+	    }
+
 	</script>
 
 		
