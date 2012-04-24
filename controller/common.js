@@ -124,3 +124,31 @@ exports.initSidebar = function initSidebar(user_id, callback) {
         callback(err, result);
     });
 };
+
+/**
+ * 查看关注的所有人
+ */
+exports.get_all_followings = function(user_id, callback) {
+    mysql.update('select * from user where id in(select following_id from follow where user_id = ?)', [ user_id ], function(err, users) {
+       callback(err, users);
+    });
+};
+
+/**
+ * 查看所有粉丝
+ */
+exports.get_all_followers = function(user_id, callback) {
+   mysql.update('select * from user where id in(select user_id from follow where following_id = ?)', [ user_id ], function(err, users) {   
+       callback(err, users);
+    });
+};
+
+/**
+ * 消息类型
+ */
+exports.MessageType = {
+        'create_archive' : 1,
+        'update_archive' : 2,
+        'reply' : 3,
+        'follow' : 4,
+};

@@ -47,6 +47,7 @@ exports.isfollow = follow_ctrl.isfollow;
 exports.view_followings = follow_ctrl.view_followings;
 exports.view_followers = follow_ctrl.view_followers;
 
-
-
-
+var message_ctrl = require('../controller/message.js');
+exports.unread_message_count = message_ctrl.unread_message_count;
+exports.view_messages = message_ctrl.view_messages;
+exports.mark_all_read = message_ctrl.mark_all_read;

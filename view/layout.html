@@ -2,8 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <html xmlns="http://www.w3.org/1999/xhtml"> 
 <head>
-	<% if(locals.topic) { %>
-	<title><%= config.name %>|<%= topic.title %></title> <% }else{ %>
+	<% if(locals.archive) { %>
+	<title><%= config.name %>|<%= archive.title %></title> <% }else{ %>
 	<title><%= config.description %></title> <% } %>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -35,10 +35,12 @@
 							<a href="/user/<%=current_user.id %>" class="nav"><%=current_user.loginname %><span></span></a>
 							<ul>
 								<li><a href="/user/<%=current_user.id%>">我的主页</a></li>
+								<li><a href="/messages">我的消息</a></li>
 								<!-- <li><a href="/user/settings/">帐号设置</a></li>  -->
 								<li class="divider"><a href="/signout">退出登录</a></li>
 							</ul>
 						</li> 
+						<li id="message_m"></li>
 						<%} else{%>
 						<li><a href="/signup" class="nav no-icon">注册</a></li>
 						<li><a href="/signin" class="nav no-icon">登录</a></li>
@@ -60,20 +62,26 @@
 								
 				   		   }
 					});
-				
-					</script>
-					<div id="search">
-					<!--  
-						<form id="search_form" method="get" action="/" class="text">
-							<input id="query" type="text" size="27" name="q"
-								autocomplete="off" placeholder="搜索话题" value=""
-								class="default_value"><a  style="width:16px;height:17px;" id="search_lens" href="#"
-								onclick="$(&#39;search_form&#39;).submit();return false;"
-								class="lg"><img src="/img/search.gif" alt="搜索"></a>
-						</form>
-					-->
-					</div>
 					
+					<% if(locals.current_user){ %>
+					$.ajax({
+				  		   type: "POST",
+						   url: "/messages/unread",
+						   success:function(data){
+								if(data.count==0){
+								    $('#message_m').html('');
+								}
+								else{
+								    $('#message_m').html('<a href="/messages" class="nav no-icon" style="color:white;text-shadow: 0 -1px rgba(34, 25, 25, .3);background-color:#cb2027;">消息('+data.count+')</a>');
+								}
+						   },
+						   error:function(){
+						       $('#message_m').html('');
+				   		   }
+					});
+					<%}%>
+					
+					</script>
 				</div>
 			</div>
 		</div>
@@ -95,13 +103,13 @@
 			<div class='fr'>
 			</div>
 			<div>
-				<strong><a class='dark' href='/about'>关于</a></strong>
+				<strong><a class='dark' href='#'>关于</a></strong>
 				&nbsp;&nbsp;|&nbsp;&nbsp; 
-				<strong><a class='dark' href='/faq'>反馈</a></strong>
+				<strong><a class='dark' href='#'>反馈</a></strong>
 				&nbsp;&nbsp;|&nbsp;&nbsp; 
-				<strong><a class='dark' href='/faq'>©2012 Sumory</a></strong>
+				<strong><a class='dark' href='#'>©2012 Sumory</a></strong>
 				&nbsp;&nbsp;|&nbsp;&nbsp; 
-				<strong><a class='dark' href='/faq'>版本: <%= config.version %></a></strong>
+				<strong><a class='dark' href='#'>版本: <%= config.version %></a></strong>
 			</div>
 			<div class='sep10'></div>
 		</div>

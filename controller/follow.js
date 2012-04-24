@@ -5,6 +5,7 @@ var mysql = require('../lib/mysql.js');
 var Util = require('../lib/util.js');
 var log = require('../lib/log.js');
 var common = require('./common.js');
+var memssage_ctrl = require('./message.js');
 
 /**
  * 加关注
@@ -24,6 +25,10 @@ exports.follow = function(req, res, next) {
             return;
         }
         else {
+            var mbody = {};
+            mbody.from_user_id = req.session.user.id;
+            mbody.from_user_name = req.session.user.loginname;
+            memssage_ctrl.create_message(common.MessageType.follow, to_follow_id, JSON.stringify(mbody), function(){});
             res.json(JSON.parse('{"flag":"success"}'));
             return;
         }
@@ -85,8 +90,7 @@ exports.isfollow = function(req, res, next) {
  */
 exports.view_followings = function(req, res, next) {
     var user_id = req.params.user_id;
-
-    mysql.update('select * from user where id in(select following_id from follow where user_id = ?)', [ user_id ], function(err, users) {
+    common.get_all_followings(user_id, function(err, users) {
         mysql.query('select count(id) as count, author_id from archive group by author_id', function(err, result) {
             for ( var i = 0; i < users.length; i++) {
                 for ( var j = 0; j < result.length; j++) {
@@ -96,7 +100,6 @@ exports.view_followings = function(req, res, next) {
                     }
                 }
             }
-            
             common.initSidebar(user_id, function(err, result) {
                 if (err) {
                     res.render('notify/notify', {
@@ -104,8 +107,8 @@ exports.view_followings = function(req, res, next) {
                     });
                     return;
                 }
-                
-                if(!(result.user)){//查不到user
+
+                if (!(result.user)) {// 查不到user
                     res.render('notify/notify', {
                         error : '查找用户信息出错'
                     });
@@ -118,8 +121,7 @@ exports.view_followings = function(req, res, next) {
                 });
                 return;
             });
-            
-            
+
         });
     });
 };
@@ -130,7 +132,7 @@ exports.view_followings = function(req, res, next) {
 exports.view_followers = function(req, res, next) {
     var user_id = req.params.user_id;
 
-    mysql.update('select * from user where id in(select user_id from follow where following_id = ?)', [ user_id ], function(err, users) {   
+    common.get_all_followers(user_id, function(err, users) {
         mysql.query('select count(id) as count, author_id from archive group by author_id', function(err, result) {
             for ( var i = 0; i < users.length; i++) {
                 for ( var j = 0; j < result.length; j++) {
@@ -140,7 +142,7 @@ exports.view_followers = function(req, res, next) {
                     }
                 }
             }
-           
+
             common.initSidebar(user_id, function(err, result) {
                 if (err) {
                     res.render('notify/notify', {
@@ -148,8 +150,7 @@ exports.view_followers = function(req, res, next) {
                     });
                     return;
                 }
-                
-                if(!(result.user)){//查不到user
+                if (!(result.user)) {// 查不到user
                     res.render('notify/notify', {
                         error : '查找用户信息出错'
                     });
@@ -162,8 +163,7 @@ exports.view_followers = function(req, res, next) {
                 });
                 return;
             });
-            
-            
+
         });
     });
 };

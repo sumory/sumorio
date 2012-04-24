@@ -3,6 +3,8 @@ var	sanitize = require('validator').sanitize;
 var async = require('async');
 var Util = require('../lib/util.js');
 var mysql = require('../lib/mysql.js');
+var common = require('./common.js');
+var memssage_ctrl = require('./message.js');
 
 /**
  * 发布一级回复：即回复文章
@@ -26,8 +28,7 @@ exports.create_reply = function(req,res,next){
 		return;
 	}
 	
-	var create_at = new Date();//创建时间
-	create_at = Util.format_date(new Date());
+	var create_at =  Util.format_date(new Date());
 	async.parallel({
         info : function(cb) {
             mysql.update('insert into reply(content,author_id,archive_id,create_at,update_at) values(?,?,?,?,?)',[content, req.session.user.id, archive_id, create_at, create_at], function(err, info){
@@ -47,6 +48,21 @@ exports.create_reply = function(req,res,next){
                 cb(null,null);
             });
         },
+        sendMessage : function(cb) {
+            mysql.queryOne('select * from archive where id = ?',[archive_id], function(err, archive){
+                if(!err){
+                    var mbody = {};
+                    mbody.from_user_id = req.session.user.id;
+                    mbody.from_user_name = req.session.user.loginname;
+                    mbody.archive_id = archive_id;
+                    mbody.archive_title = archive.title;
+                    memssage_ctrl.create_message(common.MessageType.reply, archive.author_id, JSON.stringify(mbody), function(){
+                        cb(null,null);
+                    });
+                }
+                cb(null,null);
+            });
+        }
     }, function(err, results) {
         if(err){
             res.render('notify/notify',{error:((results.info || '')+(results.update_reply_count || ''))});

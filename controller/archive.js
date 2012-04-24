@@ -3,15 +3,12 @@ var check = require('validator').check;
 var sanitize = require('validator').sanitize;
 var mysql = require('../lib/mysql.js');
 var common = require('./common.js');
+var memssage_ctrl = require('./message.js');
 var category_ctrl = require('./category.js');
 var Util = require('../lib/util.js');
 
 /**
  * 查看某篇文章
- * 
- * @param req
- * @param res
- * @param next
  */
 exports.view_archive = function(req, res, next) {
     var archive_id = req.params.archive_id;
@@ -109,10 +106,6 @@ exports.view_archive = function(req, res, next) {
 
 /**
  * 点击编辑文章
- * 
- * @param req
- * @param res
- * @param next
  */
 exports.edit_archive = function(req, res, next) {
     if (!req.session.user) {
@@ -197,11 +190,6 @@ exports.edit_archive = function(req, res, next) {
 
 /**
  * 更改文章
- * 
- * @param req
- * @param res
- * @param next
- * @returns
  */
 exports.modify_archive = function(req, res, next) {
     if (!req.session.user) {
@@ -227,7 +215,20 @@ exports.modify_archive = function(req, res, next) {
                     log.error('更新文章时发生异常');
                     cb(err, '更新文章时发生异常');
                 }
-                cb(null, '');
+                common.get_all_followers(req.session.user.id, function(err, users){//给粉丝发送消息
+                    async.forEach(users, function(user, callback) {
+                        var mbody = {};
+                        mbody.from_user_id = req.session.user.id;
+                        mbody.from_user_name = req.session.user.loginname;
+                        mbody.archive_id = archive_id;
+                        mbody.archive_title = title;
+                        memssage_ctrl.create_message(common.MessageType.update_archive, user.id, JSON.stringify(mbody), function(){
+                            callback();
+                        });
+                    }, function(err) {
+                        cb(null, '');
+                    });
+                });      
             });
         },
         deleteArchiveCategories : [ 'updateArchive', function(cb) {// 删除旧的文章分类
@@ -251,8 +252,7 @@ exports.modify_archive = function(req, res, next) {
             }, function(err) {
                 cb(null, '');
             });
-        } ]
-
+        }],
     }, function(err, results) {
         if (err) {
             res.render('notify/notify', {
@@ -441,7 +441,6 @@ exports.create_archive = function(req, res, next) {
     }
 
     if (method == 'post') {
-
         var title = sanitize(req.body.title).trim();
         title = sanitize(title).xss();
         var content = req.body.content;// 要配置editor_config.js的textarea才会生效
@@ -449,64 +448,43 @@ exports.create_archive = function(req, res, next) {
         if (req.body.archive_categories != '') {
             archive_categories = req.body.archive_categories.split(',');
         }
-
-        if (title == '' || title.length < 8 || title.length > 100) {
-            category_ctrl.get_all_categories(req.session.user.id, function(err, categories) {
-                if (err) {
-                    res.render('notify/notify', {
-                        error : '查找所有分类出错'
-                    });
-                    return;
-                }
-                for ( var i = 0; i < categories.length; i++) {
-                    for ( var j = 0; j < archive_categories.length; j++) {
-                        if (archive_categories[j] == categories[i].id) {
-                            categories[i].is_selected = true;
-                        }
-                    }
-                }
-                common.initSidebar(req.session.user.id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
-                    if (err) {
-                        res.render('notify/notify', {
-                            error : '查找用户信息出错'
-                        });
-                        return;
-                    }
-                    res.render('archive/create', {
-                        result : result,
-                        categories : categories,
-                        edit_error : '请填写符合要求的标题，不能为空，字数应在范围允许之内。',
-                        content : content
-                    });
-                    return;
+        
+        var insertDate = Util.format_date(new Date());
+        mysql.insert('insert into archive(title,content,author_id,create_at,update_at) values(?,?,?,?,?)', [ title, content, req.session.user.id, insertDate, insertDate ], function(err, info) {
+            if (err) {
+                res.render('notify/notify', {
+                    error : '保存文章时发生错误'
                 });
+                return;
+            }
 
-            });
-        }
-        else {
-            var insertDate = Util.format_date(new Date());
-            mysql.insert('insert into archive(title,content,author_id,create_at,update_at) values(?,?,?,?,?)', [ title, content, req.session.user.id, insertDate, insertDate ], function(err, info) {
+            async.forEach(archive_categories, function(category_item, callback) {
+                mysql.insert('insert into archive_category(archive_id, category_id) values(?,?)', [ info.insertId, category_item ], function(err, info) {
+                    callback();
+                });
+            }, function(err) {
                 if (err) {
-                    res.render('notify/notify', {
-                        error : '保存文章时发生错误'
-                    });
+                    res.render('notify/notify', {error : '保存文章分类时发生错误'});
                     return;
                 }
-
-                async.forEach(archive_categories, function(category_item, callback) {
-                    mysql.insert('insert into archive_category(archive_id, category_id) values(?,?)', [ info.insertId, category_item ], function(err, info) {
-                        callback();
-                    });
-                }, function(err) {
-                    if (err) {
-                        res.render('notify/notify', {
-                            error : '保存文章分类时发生错误'
+                else{
+                    common.get_all_followers(req.session.user.id, function(err, users){//给粉丝发送消息
+                        async.forEach(users, function(user, callback) {
+                            var mbody = {};
+                            mbody.from_user_id = req.session.user.id;
+                            mbody.from_user_name = req.session.user.loginname;
+                            mbody.archive_id = info.insertId;
+                            mbody.archive_title = title;
+                            memssage_ctrl.create_message(common.MessageType.create_archive, user.id, JSON.stringify(mbody), function(){
+                                callback();
+                            });
+                        }, function(err) {
+                            res.redirect('/archive/' + info.insertId);
                         });
-                        return;
-                    }
-                    res.redirect('/archive/' + info.insertId);
-                });
+                    });               
+                }
             });
-        }
+        });
+
     }
 };

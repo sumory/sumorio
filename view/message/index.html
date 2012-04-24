@@ -1,0 +1,37 @@
+
+<div class="main-right">
+	<div class="right-body">
+		<div class='panel'>
+			<div class='header'>
+				<span class='col_fade'>未读信息</span>
+			</div>
+			<% if (locals.unread_messages && unread_messages.length > 0) { %>
+			<%- partial('message/message', { collection: unread_messages, as: 'message' }) %>
+			
+			<div class='cell'>
+				<a id='mark_all_messages_btn' href='/messages/mark_all_read'  class='btn fr'>标记所有消息为已读</a>
+				<div class='sep10'></div>
+				<div class='sep10'></div>
+			</div>
+			<% } else { %>
+
+			<% } %>
+		</div>
+		<div class='sep10'></div>
+		<div class='sep10'></div>
+		<div class='sep10'></div>
+		<div class='panel'>
+			<div class='header'>
+				<span class='col_fade'>已读信息</span>
+			</div>
+			<% if (locals.hasread_messages && hasread_messages.length > 0) { %>
+			<%- partial('message/message', { collection: hasread_messages, as: 'message' }) %>
+			<% } else { %>
+
+			<% } %>
+		</div>
+	</div>
+</div>
+
+
+<%- partial('user/sidebar', { collections:result, as: 'result' }) %>

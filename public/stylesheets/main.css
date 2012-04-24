@@ -805,3 +805,8 @@ a.img:hover img,a.img:active img {
 .btn-success:active, .btn-success.active {
   background-color: #408140 \9;
 }
+
+
+.message span a{
+	color:#0088cc;
+}

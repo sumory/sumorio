@@ -99,5 +99,10 @@ app.post('/isfollow/:user_id', routes.isfollow);
 app.get('/:user_id/following', routes.view_followings);
 app.get('/:user_id/follower', routes.view_followers);
 
+//message相关
+app.post('/messages/unread', routes.unread_message_count);
+app.get('/messages', routes.view_messages);
+app.get('/messages/mark_all_read', routes.mark_all_read);
+
 app.listen(config.app_port);
 console.log("Sumorio is listening on port %d in %s mode", app.address().port, app.settings.env);
