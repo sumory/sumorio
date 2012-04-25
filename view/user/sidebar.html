@@ -14,7 +14,7 @@ var categories = result.categories;
 			<p><a href="/<%=user.id%>/following">关注： <span><%=result.followings.count%></span>人</a></p>
 		</div>
 		<div class='user_card_right'>
-			<a href="/user/<%=user.id%>" title="echover" class="img x"><img style="width:60px;" src="<%=user.avatar%>"></a>
+			<a href="/user/<%=user.id%>" title="<%= user.loginname%>" class="img x"><img style="width:60px;" src="<%=user.avatar%>"></a>
 		</div>
 	</div>
 

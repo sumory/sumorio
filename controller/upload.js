@@ -3,7 +3,7 @@ var path = require('path');
 var ndir = require('ndir');
 
 var mod = require('express/node_modules/connect/node_modules/formidable');
-var upload_path = path.join(path.dirname(__dirname), 'public/user_data/images');
+var upload_path = '/home';//path.join(path.dirname(__dirname), 'public/user_data/images');
 ndir.mkdir(upload_path, function(err) {
     if (err)
         throw err;

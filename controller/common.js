@@ -151,4 +151,5 @@ exports.MessageType = {
         'update_archive' : 2,
         'reply' : 3,
         'follow' : 4,
+        'unfollow' : 5,
 };

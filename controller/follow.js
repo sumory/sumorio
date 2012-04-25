@@ -52,6 +52,10 @@ exports.unfollow = function(req, res, next) {
             return;
         }
         else {
+            var mbody = {};
+            mbody.from_user_id = req.session.user.id;
+            mbody.from_user_name = req.session.user.loginname;
+            memssage_ctrl.create_message(common.MessageType.unfollow, to_follow_id, JSON.stringify(mbody), function(){});
             res.json(JSON.parse('{"flag":"success"}'));
             return;
         }

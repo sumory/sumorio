@@ -3,6 +3,9 @@ var mysql = require('../lib/mysql.js');
 var Util = require('../lib/util.js');
 var common = require('./common.js');
 
+/**
+ * 创建消息
+ */
 exports.create_message = function (type, user_id, content, cb){
     var create_at = Util.format_date(new Date());
     mysql.insert('insert into message(type, user_id, content, create_at) values(?,?,?,?)', [ type, user_id, content, create_at ], function(err, info) {
@@ -16,6 +19,9 @@ exports.create_message = function (type, user_id, content, cb){
     });
 };
 
+/**
+ * 查看所有消息
+ */
 exports.view_messages = function (req, res, next){
     if (!req.session.user) {
         res.render('notify/notify', {
@@ -75,6 +81,9 @@ exports.view_messages = function (req, res, next){
    
 };
 
+/**
+ * 未读消息数
+ */
 exports.unread_message_count = function (req, res, next){
     if (!req.session.user) {
         res.json({
@@ -92,6 +101,9 @@ exports.unread_message_count = function (req, res, next){
     });
 };
 
+/**
+ * 标记所有消息为已读
+ */
 exports.mark_all_read = function(req, res, next){
     var user_id = req.session.user.id;
     mysql.query('update message set is_read = ? where user_id = ?',[1, user_id], function(err, result) {
