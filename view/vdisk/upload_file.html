@@ -68,7 +68,7 @@
 					    complete : function(xhr) {
 					        var data = xhr.responseText;
 					        data = eval("(" + data + ")");
-					        if (data.state) {
+					        if (data.state=='success') {
 					            uploadFile = data.result;
 					            $("#uploadFile").val(JSON.stringify(uploadFile));
 					            $('#file_name_span').html($('#file_name_span').text()+":上传成功");
