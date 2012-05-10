@@ -118,7 +118,7 @@ exports.view_followers = function(req, res, next) {
             res.render('user/person', {
                 user_id : user_id,
                 users : users,
-                title : '关注人'
+                title : '粉丝'
             });
             return;
         });
