@@ -1,7 +1,7 @@
 <!-- 用户的关注人和粉丝列表 -->
 
-<div class="main-right">
-<div class="right-body">
+<div class="main-body">
+
 	<div class='panel'>
 		<div class='header'>
 			<span class='col_fade'><%=locals.title%></span>
@@ -10,29 +10,22 @@
 			
 				<% for(var i =0;i< locals.users.length;i++){ var user =
 				locals.users[i]; %>
-				<div class='user' style="background-color: #ffffff;">
-					<div>
-						<% if(user.avatar){ %> <a href='/user/<%= user.loginname %>'><img
-							class='user_avatar' src='<%= user.avatar %>'
-							title='<%= user.loginname %>' /></a> 
-						<% }else{ %> 
-						<a href='/user/<%= user.loginname %>'>
-							<img class='user_avatar' src='/img/avatar.png' title='<%= user.loginname %>' />
-						</a>
-					    <% } %> 
-					    <span class='user_name'><a href='/user/<%= user.id %>'><%= user.loginname %></a></span>
-						<div class='sep5'></div>
-						<span class='col_fade'>文章数:<%=user.archive_count?user.archive_count:0%></span>
-
-					</div>
-					<div class='sep10'></div>
-				</div>
+				<div class='user card'>
+					<% if(user.avatar){ %>
+					<a href='/user/<%= user.id %>'><img class='user_avatar' src='<%= user.avatar %>' title='<%= user.loginname %>' /></a>
+					<% }else{ %>
+					<a href='/user/<%= user.id %>'><img class='user_avatar' src='/img/avatar.png' title='<%= user.loginname %>' /></a>
+					<% } %>
+					<span class='user_name'><a class='dark' href='/user/<%= user.id %>'><%= user.loginname %></a></span>
+					<div class='sep5'></div>
+					<span class='col_fade'>文章数: <a href='/<%=user.id%>/archives'><%=user.archive_count?user.archive_count:0%></a>&nbsp;&nbsp;&nbsp;&nbsp;粉丝: <a href='/<%=user.id%>/follower'><%=user.follower_count?user.follower_count:0%></a>&nbsp;&nbsp;&nbsp;&nbsp;关注: <a href='/<%=user.id%>/following'><%=user.following_count?user.following_count:0%></a></span>
+				</div>	
 				<%}%>
 
 			</div>
 		</div>
-	</div>
+
 </div>
-<%- partial('user/sidebar',{collections:result,as:'result'}) %>
+<%-partial('user/profile',{object:locals.user_id, as:'user_id'})%>
 
 

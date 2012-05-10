@@ -1,11 +1,14 @@
 var async = require('async');
 var check = require('validator').check;
 var sanitize = require('validator').sanitize;
-var mysql = require('../lib/mysql.js');
-var common = require('./common.js');
-var memssage_ctrl = require('./message.js');
+var mysql = require('../../lib/mysql.js');
+var common = require('../common/common.js');
+var memssage_ctrl = require('../message.js');
 var category_ctrl = require('./category.js');
-var Util = require('../lib/util.js');
+var user_ctrl = require('../user.js');
+var Util = require('../../lib/util.js');
+var log = require('../../lib/log.js');
+
 
 /**
  * 查看某篇文章
@@ -22,23 +25,23 @@ exports.view_archive = function(req, res, next) {
                             cb(null, {});
                         }
                         if (!archive) {
-                            cb(null, {});
+                            res.render('notify/notify', {
+                                error : '您查找的文章信息存在错误'
+                            });
+                            return;
                         }
-                        author_id = archive.author_id;
-                        cb(null, archive);
+                        else{
+                            author_id = archive.author_id;
+                            cb(null, archive);
+                        }
                     });
         },
-        sidebar_data : [ 'archive', function(cb) {
-            common.initSidebar(author_id, function(err, result) {
-                if (err) {
-                    log.error('查看文章，通过文章id查找用户信息错误');
+        author : [ 'archive', function(cb) {
+            user_ctrl.getUser(author_id, function(err, user) {
+                if (err || !user) {
                     cb(null, {});
                 }
-                if (!result || !result.user) {
-                    log.error('查看文章，通过文章id查找不到用户');
-                    cb(null, {});
-                }
-                cb(null, result);
+                cb(null, user);
             });
         } ],
         updateArchive : [ 'archive', function(cb) {
@@ -92,10 +95,9 @@ exports.view_archive = function(req, res, next) {
             });
             return;
         }
-        // console.log(results.archive_replies);
         results.archive.replies = results.archive_replies;
         res.render('archive/archive', {
-            result : results.sidebar_data,
+            author : results.author,
             archive : results.archive,
             archive_categories : results.archive_categories
         });
@@ -135,23 +137,18 @@ exports.edit_archive = function(req, res, next) {
                                 });
                                 return;
                             }
-
                             cb(null, archive);
                         }
-
-                    });
+             });
         },
-        sidebar_data : [ 'archive', function(cb) {
-            common.initSidebar(author_id, function(err, result) {
-                if (err) {
-                    log.error('编辑文章，通过文章id查找用户信息错误');
-                    cb(null, {});
+        all_categories :[ 'archive', function(cb) {
+            category_ctrl.get_all_categories(author_id,function(err,categories){
+                if(err || !categories){
+                    cb(null,[]);
                 }
-                if (!result) {
-                    log.error('编辑文章，通过文章id查找不到用户');
-                    cb(null, {});
+                else{
+                    cb(null, categories);
                 }
-                cb(null, result);
             });
         } ],
         archive_categories : function(cb) {
@@ -171,18 +168,17 @@ exports.edit_archive = function(req, res, next) {
             return;
         }
 
-        for ( var i = 0; results.sidebar_data.categories.length && i < results.sidebar_data.categories.length; i++) {
+        for ( var i = 0; results.all_categories.length && i < results.all_categories.length; i++) {
             for ( var j = 0; j < results.archive_categories.length; j++) {
-                if (results.archive_categories[j].id == results.sidebar_data.categories[i].id) {
-                    results.sidebar_data.categories[i].is_selected = true;
+                if (results.archive_categories[j].id == results.all_categories[i].id) {
+                    results.all_categories[i].is_selected = true;
                 }
             }
         }
 
         res.render('archive/edit', {
-            result : results.sidebar_data,
             archive : results.archive,
-            categories : results.sidebar_data.categories
+            categories : results.all_categories
         });
         return;
     });
@@ -332,28 +328,13 @@ exports.view_user_archives = function(req, res, next) {
             });
             return;
         }
-        common.initSidebar(user_id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
-            if (err) {
-                res.render('notify/notify', {
-                    error : '查找用户信息出错'
-                });
-                return;
-            }
-            //console.log('----------------------');
-            //console.log(result);
-            
-            if(!(result.user)){//查不到user
-                res.render('notify/notify', {
-                    error : '查找用户信息出错'
-                });
-                return;
-            }
-            res.render('archive/user_archives', {
-                result : result,
-                archives : archives
-            });
-            return;
+
+        res.render('archive/user_archives', {
+            user_id : user_id,
+            archives : archives
         });
+        return;
+       
     });
 };
 
@@ -376,25 +357,16 @@ exports.view_archives = function(req, res, next) {
             });
             return;
         }
-        common.initSidebar(user_id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
-            if (err) {
-                res.render('notify/notify', {
-                    error : '查找用户信息出错'
+        else{
+            category_ctrl.get_category(category_id, function(err, category){
+                res.render('archive/archives', {
+                    user_id : user_id,
+                    archives : archives,
+                    category : category || {}
                 });
-                return;
-            }
-            if(!(result.user)){//查不到user
-                res.render('notify/notify', {
-                    error : '查找用户信息出错'
-                });
-                return;
-            }
-            res.render('archive/archives', {
-                result : result,
-                archives : archives
-            });
-            return;
-        });
+            }); 
+        }
+        
     });
 };
 
@@ -418,24 +390,13 @@ exports.create_archive = function(req, res, next) {
     if (method == 'get') {// 点击"发布"按钮
         category_ctrl.get_all_categories(req.session.user.id, function(err, categories) {
             if (err) {
-                res.render('notify/notify', {
-                    error : '获取所有分类出错'
-                });
+                res.render('notify/notify', {error : '获取所有分类出错'});
                 return;
             }
-            common.initSidebar(req.session.user.id, function(err, result) { // 获取用户页左侧sidebar数据,包括所有文章分类数据
-                if (err) {
-                    res.render('notify/notify', {
-                        error : '查找用户信息出错'
-                    });
-                    return;
-                }
-                res.render('archive/create', {
-                    result : result,
-                    categories : categories
-                });
-                return;
+            res.render('archive/create', {
+                categories : categories
             });
+            return;
 
         });
     }

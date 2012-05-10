@@ -1,11 +1,5 @@
 
-<%
-var categories=locals.categories;//已标明哪些是此文章所属的分类
-%>
-<div class="main-right">
-	
-	<div class="right-body">
-
+<div class="main-body">
 		<div class='panel'>
 			<div class='header'>
 				<span class='col_fade'>编辑文章</span>
@@ -24,11 +18,10 @@ var categories=locals.categories;//已标明哪些是此文章所属的分类
 					<div>
 						<label class='bold' for='t_content'>内容和标签</label>
 						<div class='tabbable'>
-									<div style='width: 698px;height:40px;padding:0px;'><%- partial('archive/category_selectable',{collection:categories, as:'category'}) %></div>
-									<div class='input'>
-										<textarea class='span8' id="editor"  name='content' rows='20' style='width:700px;height:auto;'><%= archive.content %></textarea>
-									</div>
-									
+								<div style='width: 698px;height:40px;padding:10px 0;'><%- partial('archive/category_selectable',{collection:categories, as:'category'}) %></div>
+								<div class='input'>
+									<textarea id="editor"  name='content' rows='20' style='width:700px;height:auto;'><%= archive.content %></textarea>
+								</div>
 						</div>
 					</div>
 					<input type='hidden' id='archive_categories' name='archive_categories' value=''></input>
@@ -36,14 +29,14 @@ var categories=locals.categories;//已标明哪些是此文章所属的分类
 					<div class='sep10'></div>
 					<div class='sep10'></div>
 					<div class='form-actions'>
-							<input type='submit' id='submit_btn' class='btn' value="修改并提交"/>
+						<input type='submit' id='submit_btn' class='btn' value="修改并提交"/>
 					</div>
 			</div>
 			
 			</form>
 		</div>
 
-	</div>
+
 
 	<script type='text/javascript'>
 		    window.UEDITOR_CONFIG.minFrameHeight=500;
@@ -52,8 +45,8 @@ var categories=locals.categories;//已标明哪些是此文章所属的分类
 		    function check(){
 		        editor.sync();//同步
 		        var values=[];
-				$('.tag_selectable').each(function(){
-					if($(this).hasClass('tag_select')){
+				$('.category_selectable').each(function(){
+					if($(this).hasClass('category_select')){
 						values.push($(this).attr('tag_id'));
 					}
 				});
@@ -71,11 +64,11 @@ var categories=locals.categories;//已标明哪些是此文章所属的分类
 		   		}
 		    }
 		    
-			$('.tag_selectable').click(function(){
-				$(this).toggleClass('tag_select');
+			$('.category_selectable').click(function(){
+				$(this).toggleClass('category_select');
 			});
 	
 	</script>
 
 </div>
-<%- partial('user/sidebar',{collections:result,as:'result'}) %>
+<%-partial('user/profile',{object:locals.current_user.id, as:'user_id'})%>

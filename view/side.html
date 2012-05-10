@@ -1,0 +1,100 @@
+
+<%
+var user_id;
+if(locals.current_user){
+	user_id = locals.current_user.id;
+}
+%>
+
+<div class="side_span">
+	<% if(locals.current_user){%>
+	<div class='user_card' id='user_card'>
+		<div class='user_card_left'>
+			<h1><a href="#"></a></h1>
+			<p><a href="#">粉丝： <span>0</span>个</a></p>
+			<p><a href="#">关注： <span>0</span>人</a></p>
+		</div>
+		<div class='user_card_right'></div>
+	</div>
+	<div  class="operate">
+		<a href="/user/<%=user_id%>" class="btn btn-info"><i class="icon-home icon-white"></i> 进入主页</a>
+	</div>
+	
+	<%}else{%>
+		<div class='header'>
+			<span class='col_fade'>登录Sumorio使用更多功能</span>
+		</div>
+		<div class='inner textCenter'>
+			<a href="/signin" class="btn btn-info"><i class="icon-user icon-white"></i> 登录</a>
+		</div>
+	<%}%>
+</div>
+
+<div class="side_span">
+	<div class='header'>
+		<span class='col_fade'>活跃用户</span>
+	</div>
+	<div class='inner' id='positive_usres'>
+	</div>
+</div>
+
+<div class="side_span">
+	<div class='header'>
+		<span class='col_fade'>友情社区</span>
+	</div>
+	<div class='inner'>
+		<a href='http://nodejs.org'><img src='/img/nodejsorg.png'/></a>
+	</div>
+</div>
+
+<script>
+	$(document).ready(function() {
+	    
+	    <% if(locals.current_user){%>
+			var html_user_card = '<div class="user_card_left">'+
+			'<h1><a href="/user/${user.id}">${user.loginname}</a></h1>'+
+			'<p><a href="/${user.id}/follower">粉丝： <span>${follower_count}</span>个</a></p>'+
+			'<p><a href="/${user.id}/following">关注： <span>${following_count}</span>人</a></p>'+
+			'</div>'+
+			'<div class="user_card_right">'+
+				'<a href="/user/${user.id}" title="${user.loginname}" class="img x"><img style="width:70px;" src="${user.avatar}"></a>'+
+			'</div>';
+			var tpl_user_card=juicer(html_user_card);
+				    
+		    $.ajax({//得到基本信息
+				type: "POST",
+				url: "/userinfo/user/"+<%=user_id%>,
+				success:function(data){
+				    $('#user_card').html(tpl_user_card.render(data));
+				},
+			  	error:function(){}
+			});
+	    <%}%>
+	    
+	    
+	    var html_positive_usres = '';
+
+		html_positive_usres+='{@each users as user,index}'+
+		'<div class="user">'+
+		'<a href="/user/${user.id}"><img class="user_avatar" src="${user.avatar}" title="${user.loginname}"></a>'+
+		'<span><a href="/user/${user.id}">${user.loginname}</a></span>'+
+		'<div class="sep5"></div>'+
+		'<span class="col_fade">${user.follower_count} 粉丝</span>'+
+		'<span class="sp5"></span>'+
+		'<span class="col_fade">${user.following_count} 关注</span>'+
+		'</div>'+
+		'{@/each}';
+		var tpl_positive_usres=juicer(html_positive_usres);
+		
+		$.ajax({//得到活跃用户
+			type: 'POST',
+			url: '/positive_users',
+			success:function(data){
+			    $('#positive_usres').html(tpl_positive_usres.render(data));
+			},
+		  	error:function(){}
+		});
+	    
+	});
+</script>
+

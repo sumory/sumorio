@@ -4,8 +4,9 @@ var sanitize = require('validator').sanitize;
 var mysql = require('../lib/mysql.js');
 var Util = require('../lib/util.js');
 var log = require('../lib/log.js');
-var common = require('./common.js');
+var common = require('./common/common.js');
 var memssage_ctrl = require('./message.js');
+var user_ctrl = require('./user.js');
 
 /**
  * 加关注
@@ -55,7 +56,7 @@ exports.unfollow = function(req, res, next) {
             var mbody = {};
             mbody.from_user_id = req.session.user.id;
             mbody.from_user_name = req.session.user.loginname;
-            memssage_ctrl.create_message(common.MessageType.unfollow, to_follow_id, JSON.stringify(mbody), function(){});
+            memssage_ctrl.create_message(common.MessageType.unfollow, to_unfollow_id, JSON.stringify(mbody), function(){});
             res.json(JSON.parse('{"flag":"success"}'));
             return;
         }
@@ -95,37 +96,13 @@ exports.isfollow = function(req, res, next) {
 exports.view_followings = function(req, res, next) {
     var user_id = req.params.user_id;
     common.get_all_followings(user_id, function(err, users) {
-        mysql.query('select count(id) as count, author_id from archive group by author_id', function(err, result) {
-            for ( var i = 0; i < users.length; i++) {
-                for ( var j = 0; j < result.length; j++) {
-                    if (users[i].id == result[j].author_id) {
-                        users[i].archive_count = result[j].count;
-                        break;
-                    }
-                }
-            }
-            common.initSidebar(user_id, function(err, result) {
-                if (err) {
-                    res.render('notify/notify', {
-                        error : '查找用户信息出错'
-                    });
-                    return;
-                }
-
-                if (!(result.user)) {// 查不到user
-                    res.render('notify/notify', {
-                        error : '查找用户信息出错'
-                    });
-                    return;
-                }
-                res.render('user/person', {
-                    users : users,
-                    result : result,
-                    title : '关注人'
-                });
-                return;
+        user_ctrl.user_count(users, function(err, users){
+            res.render('user/person', {
+                user_id : user_id,
+                users : users,
+                title : '关注人'
             });
-
+            return;
         });
     });
 };
@@ -137,37 +114,13 @@ exports.view_followers = function(req, res, next) {
     var user_id = req.params.user_id;
 
     common.get_all_followers(user_id, function(err, users) {
-        mysql.query('select count(id) as count, author_id from archive group by author_id', function(err, result) {
-            for ( var i = 0; i < users.length; i++) {
-                for ( var j = 0; j < result.length; j++) {
-                    if (users[i].id == result[j].author_id) {
-                        users[i].archive_count = result[j].count;
-                        break;
-                    }
-                }
-            }
-
-            common.initSidebar(user_id, function(err, result) {
-                if (err) {
-                    res.render('notify/notify', {
-                        error : '查找用户信息出错'
-                    });
-                    return;
-                }
-                if (!(result.user)) {// 查不到user
-                    res.render('notify/notify', {
-                        error : '查找用户信息出错'
-                    });
-                    return;
-                }
-                res.render('user/person', {
-                    users : users,
-                    result : result,
-                    title : '粉丝'
-                });
-                return;
+        user_ctrl.user_count(users, function(err, users){
+            res.render('user/person', {
+                user_id : user_id,
+                users : users,
+                title : '关注人'
             });
-
+            return;
         });
     });
 };

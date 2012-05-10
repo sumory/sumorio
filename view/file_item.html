@@ -1,0 +1,21 @@
+<tr id="file_tr_<%=file.id%>" title='<%=file.description%>'>
+	<td>
+		<div style='float:left;width:40px;'><a class="disk_icon32_v2 disk_<%=file.name.substring(file.name.lastIndexOf('.')+1)%>" href="/file/<%=file.id%>" title="<%=file.name%>"></a></div>
+		<div style='float:left;line-height:32px;'><a href="/file/<%=file.id%>" title="<%=file.name%>"><%= file.name.substring(0,35) %></a></div>
+	</td>
+	<td style='line-height:32px;'>
+	<%
+	var bytevalue = file.size;
+	if(bytevalue<1024){
+	%>
+    <%=bytevalue%> Bytes
+    <%}else if(bytevalue>=1024 && bytevalue<1024*1024){%>
+    <%=Math.round(bytevalue/1024)%> K
+    <%}else if(bytevalue>=1024*1024 && bytevalue<1024*1024*1024){%>
+    <%=Math.round(bytevalue/1024/1024)%> M
+    <%}%>
+	</td>
+	
+	<td style='line-height:32px;'><a href='/user/<%=file.user.id%>'><%=file.user.loginname%></a></td>
+	<td style='line-height:32px;'><%=file.down_count%></td>
+</tr>

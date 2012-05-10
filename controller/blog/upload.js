@@ -1,9 +1,12 @@
 var fs = require('fs');
 var path = require('path');
 var ndir = require('ndir');
-
+var config = require('../../config.js').config;
 var mod = require('express/node_modules/connect/node_modules/formidable');
-var upload_path = '/home';//path.join(path.dirname(__dirname), 'public/user_data/images');
+
+
+var path_prefix = config.archive_pic_path;
+var upload_path = path.join(path.dirname(__dirname), 'public' + path_prefix);//上传的图片位于public目录下的‘path_prefix’文件夹下
 ndir.mkdir(upload_path, function(err) {
     if (err)
         throw err;
@@ -47,7 +50,7 @@ exports.upload_image = function(req, res, next) {
 
                 // ueditor有提供相对路径到绝对路径的转化
                 //var url = 'http://' + host + '/user_data/images/' + uid + '/' + new_name;//使用绝对路径，image.html的insertBatch方法中使用tmpObj.data_ue_src = tmpObj.src =ci.url;
-                var url = '/user_data/images/' + uid + '/' + new_name;//使用相对路径，image.html的insertBatch方法中使用tmpObj.data_ue_src = tmpObj.src =ci.url;
+                var url = path_prefix + '/' + uid + '/' + new_name;//使用相对路径，image.html的insertBatch方法中使用tmpObj.data_ue_src = tmpObj.src =ci.url;
                 
                 res.json({// 严格此格式，否则ueditor会发生乱七八糟错误
                     state : 'SUCCESS',

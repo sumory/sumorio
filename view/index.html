@@ -1,22 +1,38 @@
 
 
-<div class="main-right">
-			<div class="right-body">
-
-
-					<div class='panel'>
-						<div class='header'>
-							<span class='col_fade'>所有文章</span>
-						</div>
-						<%
-						if(archives && archives.length > 0){
-						%>
-						<%- partial('archive/archive_item',{collection:archives,as:'archive'}) %>
-						<%}else{%>
-						<p class='col_fade' style="margin:20px;">暂无文章</p>
-						
-						<%}%>
-					</div>
+<div class="main-body">
 	
-			</div>
+	<div class='panel'>
+		<div class='header'>
+			<span class='col_fade'><i class="icon-time"></i> 最新文章</span>
+		</div>
+		<% if(new_archives && new_archives.length > 0){ %> 
+		<%-partial('archive/archive_item_2',{collection:new_archives,as:'archive'}) %>
+		<%}else{}%>
+	</div>
+	
+	
+	
+	<div class='panel'>
+		<div class='header'>
+			<span class='col_fade'><i class="icon-eye-open"></i> 最多访问</span>
+		</div>
+		<% if(most_visit_archives && most_visit_archives.length > 0){ %> 
+		<%-partial('archive/archive_item_2',{collection:most_visit_archives,as:'archive'}) %>
+		<%}else{}%>
+	</div>
+	
+	
+	
+	<div class='panel'>
+		<div class='header'>
+			<span class='col_fade'><i class="icon-comment"></i> 最多回复</span>
+		</div>
+		<% if(most_reply_archives && most_reply_archives.length > 0){ %> 
+		<%-partial('archive/archive_item_2',{collection:most_reply_archives,as:'archive'}) %>
+		<%}else{}%>
+	</div>
+	
+</div>
 
+<%-partial('side')%>

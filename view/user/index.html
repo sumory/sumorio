@@ -1,10 +1,7 @@
 
-<div class="main-right">
-			<div class="right-body">
-				
-			
-			</div>
+<div class="main-body">
+
 </div>
-<%- partial('user/sidebar',{collections:result,as:'result'}) %>
+<%-partial('user/profile',{object:locals.current_user.id, as:'user_id'})%>
 
 

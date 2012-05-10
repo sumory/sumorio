@@ -1,6 +1,6 @@
 var check = require('validator').check;
 var sanitize = require('validator').sanitize;
-var common = require('./common.js');
+var common = require('./common/common.js');
 var config = require('../config.js').config;
 var mysql = require('../lib/mysql.js');
 
@@ -92,10 +92,9 @@ exports.signup = function(req, res, next) {
                 return;
             }
 
-            // md5 the pass
-            pass = common.md5(pass);
+            pass = common.md5(pass);// md5 the pass
             // create gavatar
-            var avatar_url = 'http://www.gravatar.com/avatar/' + common.md5(email) + '?size=48';
+            var avatar_url = '/user_data/avatar/avatar.png';//'http://www.gravatar.com/avatar/' + common.md5(email) + '?size=48';网速问题，初始化头像时不再支持gravatar
 
             mysql.insert('insert into user(loginname,email,pwd,create_at,avatar) values(?,?,?,?,?)', [ loginname, email, pass, new Date(), avatar_url ], function(err, info) {
                 if (err)
@@ -153,14 +152,15 @@ exports.signin = function(req, res, next) {
             }
 
             gen_session(user, res);// store session cookie
-            //console.log('gen_session->redirect');
             res.redirect('home');
         });
 
     }
 };
 
-// sign out
+/**
+ * 退出系统
+ */
 exports.signout = function(req, res, next) {
     req.session.destroy();
     res.clearCookie(config.auth_cookie_name, {
@@ -169,7 +169,7 @@ exports.signout = function(req, res, next) {
     res.redirect('home');
 };
 
-// private
+
 function gen_session(user, res) {
     var auth_token = common.encrypt(user.id + '\t' + user.loginname + '\t' + user.pwd + '\t' + user.email, config.session_secret);
     res.cookie(config.auth_cookie_name, auth_token, {
@@ -178,13 +178,11 @@ function gen_session(user, res) {
     }); // cookie 有效期1周
 }
 
-// auth_user middleware
+/**
+ * auth_user middleware
+ */
 exports.auth_user = function(req, res, next) {
     if (req.session.user) {
-        if (config.admins[req.session.user.name]) {
-            req.session.user.is_admin = true;
-        }
-
         res.local('current_user', req.session.user);
         return next();
     }
@@ -197,14 +195,10 @@ exports.auth_user = function(req, res, next) {
         var auth = auth_token.split('\t');
         var user_id = auth[0];
 
-        //console.log('...调用auth_user');
         mysql.queryOne("select * from user where id = ?", [ user_id ], function(err, user) {
             if (err)
                 return next(err);
             if (user) {
-                if (config.admins[user.loginname]) {
-                    user.is_admin = true;
-                }
                 req.session.user = user;
                 res.local('current_user', req.session.user);
                 return next();
@@ -212,6 +206,5 @@ exports.auth_user = function(req, res, next) {
             else
                 return next();
         });
-
     }
 };

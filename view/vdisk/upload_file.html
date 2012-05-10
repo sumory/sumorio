@@ -1,0 +1,111 @@
+
+<div class="main-body">
+		<div class='panel'>
+			<div class='header'>
+				<span class='col_fade'>上传文件&nbsp;&nbsp;&nbsp;<span class="badge  badge-important">1</span>  选择并上传文件&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="badge  badge-important">2</span>  选择文件夹保存</span>
+			</div>
+			<div class='inner'>
+				<%if(folders && folders.length>0){%>
+				<form id="uploadForm" action="/file/add" class='form-horizontal' method="post" style="margin-top:20px;">
+						<div class="control-group">
+							<label class="control-label">选择文件</label>
+							<div class="controls">
+								<a onclick="chooseAttachment()" href='javascript:void(0)' class="btn btn-info">选择文件</a>
+								<a id="link_upload_file" onclick="uploadAttachment()" href='javascript:void(0)' class="btn btn-info" style="display:none;"'>上传</a>
+								<div style="height:15px;width:100px;"></div>
+								<span  class="label label-info" id="file_name_span">提示信息</span>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">选择文件夹</label>
+							<div class="controls">
+								<select class='span2' name='folder_id'> 
+								<% if(folders && folders.length > 0 ){ for(var i=0; i < folders.length; i++){
+									%>
+									<option value='<%= folders[i].id %>'><%=
+										folders[i].name %></option> <% } } %>
+								</select>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">是否公开</label>
+							<div class="controls">
+								<select class='span2' name='is_public'>
+									<option value='0' selected='selected'>私密</option>
+									<option value='1'>公开</option>
+								</select> 
+								
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">描述</label>
+							<div class="controls">
+								<input class="input-xlarge" type="text" name='description'/>
+							</div>
+						</div>
+						<input type='hidden' name='uploadFile' id='uploadFile' /> 
+						<input type='hidden' name='_csrf' value='<%= csrf %>' />
+						<div class="control-group">
+							<label class="control-label"></label>
+							<div class="controls">
+								<button id="submit_button" class='btn btn-success' disabled="disabled">保存文件到文件夹</button>
+							</div>
+						</div>
+				</form>
+
+
+
+				<form id="attachmentForm" action="/file/upload" method="post" target="hidden_frame" enctype="multipart/form-data" style="visibility:hidden;">
+					<input type="file" name="attachment" onchange="changeFileChoose(this);" />
+					<input type="submit" id="upload_submit_button"/>
+				</form>
+				<!-- 隐藏提交iframe -->
+				<iframe name="hidden_frame" id="hidden_frame" style="display:none"></iframe>
+
+				<script type="text/javascript" src="/libs/jquery/jquery.form.js"></script>
+				<script>
+					$('#attachmentForm').ajaxForm({
+					    complete : function(xhr) {
+					        var data = xhr.responseText;
+					        data = eval("(" + data + ")");
+					        if (data.state) {
+					            uploadFile = data.result;
+					            $("#uploadFile").val(JSON.stringify(uploadFile));
+					            $('#file_name_span').html($('#file_name_span').text()+":上传成功");
+					            $('#submit_button').removeAttr('disabled');
+					        }
+					        else {
+					            alert('上传失败');
+					        }
+					    }
+					});
+					
+				    function chooseAttachment() {
+				        $("input[name='attachment']").click();
+				    }
+				    
+				    function changeFileChoose(obj){		
+				        $('#link_upload_file').show();
+						$('#file_name_span').html(obj.value);
+						$('#submit_button').attr('disabled','disabled');
+					}
+				    
+				    function uploadAttachment(obj){
+				        $('#link_upload_file').hide();
+				        $('#upload_submit_button').click();
+				    }
+				    
+				    var uploadFile = {};
+				    
+				</script>
+				<%}else{%>
+				<div class="alert alert-error">请先<a href='/folders/edit'>新建文件夹</a>再上传文件</div>
+				<%}%>
+			</div>
+		</div>
+</div>
+
+
+
+<%-partial('user/profile',{object:locals.current_user.id,
+as:'user_id'})%>

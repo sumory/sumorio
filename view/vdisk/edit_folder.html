@@ -1,0 +1,49 @@
+
+<div class="main-body">
+
+	<div class='panel'>
+		<div class='header'>
+			<span class='col_fade'><a href="/folders/edit/">所有文件夹</a>&nbsp;&nbsp;&gt;&gt;&nbsp;&nbsp;编辑文件夹</span>
+		</div>
+		<div class='inner'>
+			<form id='edit_folder_form' class='form-horizontal' action='/folder/<%= folder.id %>/modify' method='post'>
+				<div class='control-group'>
+					<label class='control-label' for='name'>名字</label>
+					<div class='controls'>
+						<input class='input-xlarge' id='name' name='name' size='30' type='text' value='<%= folder.name %>'/>
+						<p class='help-block'>须为汉字和字母和数字组合</p>
+					</div>
+				</div>
+				<div class='control-group'>
+					<label class='control-label' for='sequence'>序号</label>
+					<div class='controls'>
+					<select class='span2' name='sequence'>
+					<% if(folders && folders.length > 0 ){ %>
+					<% for(var i=0; i < folders.length; i++){ %>
+					<% if(folder.sequence == (i+1)){ %>
+						<option value='<%= i+1 %>' selected='selected'><%= i+1 %></option>
+					<% }else{ %>
+						<option value='<%= i+1 %>'><%= i+1 %></option>
+					<% } %>
+					<% } %>
+					<% } %>
+					</select>
+					<p class='help-block'>分类按此序号由小到大排序</p>
+					</div>
+				</div>
+
+				<input type='hidden' name='_csrf' value='<%= csrf %>' />
+				
+				<div class='control-group'>
+					<label class='control-label' for='name'></label>
+					<div class='controls'>
+						<input type='submit' class='btn' value='保存' />
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</div>
+
+<%-partial('user/profile',{object:locals.current_user.id, as:'user_id'})%>

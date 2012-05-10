@@ -1,0 +1,149 @@
+
+<%
+var isCurrentUser = false;
+if(locals.current_user && (locals.current_user.id == user_id)){
+	isCurrentUser = true;
+}
+%>
+
+<div class="side_span">
+	<div class='user_card' id='user_card'>
+		<div class='user_card_left'>
+			<h1><a href="#"></a></h1>
+			<p><a href="#">粉丝： <span>0</span>个</a></p>
+			<p><a href="#">关注： <span>0</span>人</a></p>
+		</div>
+		<div class='user_card_right'></div>
+	</div>
+
+	<% if(isCurrentUser){%>
+	<div class="operate">
+		<a href="/archive/create" class="btn btn-info"><i class="icon-pencil icon-white"></i> 发布文章</a>
+		<a href="/file/upload" class="btn btn-info"><i class="icon-upload icon-white"></i> 上传文件</a>
+	</div>
+	<%}else{%>
+	<div  class="operate" id ='follow_area'></div>
+	<%}%>
+	
+	
+	<ol class="activity" id="caregory_panel"></ol>
+	<ol class="activity" id="folder_panel"></ol>
+</div>
+
+
+
+
+<script>
+	$(document).ready(function() {
+	    
+		var html_user_card = '<div class="user_card_left">'+
+		'<h1><a href="/user/${user.id}">${user.loginname}</a></h1>'+
+		'<p><a href="/${user.id}/follower">粉丝： <span>${follower_count}</span>个</a></p>'+
+		'<p><a href="/${user.id}/following">关注： <span>${following_count}</span>人</a></p>'+
+		'</div>'+
+		'<div class="user_card_right">'+
+			'<a href="/user/${user.id}" title="${user.loginname}" class="img x"><img style="width:70px;" src="${user.avatar}"></a>'+
+		'</div>';
+		var tpl_user_card=juicer(html_user_card);
+		
+		
+		var html_caregory_panel = '';
+		if(<%=isCurrentUser%>){//根据是否是登录人的页面显示’编辑‘
+			html_caregory_panel+='<li>&nbsp;我的归档&nbsp;&nbsp;&nbsp;&nbsp;<a href="/categories/edit/">编辑</a></li>'; 
+		}
+		else{
+		    html_caregory_panel+='<li>&nbsp;Ta 的归档'; 
+		}
+		html_caregory_panel+='{@each categories as item,index}'+
+		'<li>▶&nbsp;&nbsp;<a href="/archives/${item.user_id}/${item.id}">${item.name}&nbsp;&nbsp;({@if !item.archive_count}0{@else}${item.archive_count}{@/if})</a></li>'+
+		'{@/each}';
+		var tpl_caregory_panel=juicer(html_caregory_panel);
+		
+		var html_folder_panel = '';
+		if(<%=isCurrentUser%>){//根据是否是登录人的页面显示’编辑‘
+		    html_folder_panel+='<li>&nbsp;我的文件夹&nbsp;&nbsp;&nbsp;&nbsp;<a href="/folders/edit/">编辑</a></li>'; 
+		}
+		else{
+		    html_folder_panel+='<li>&nbsp;Ta 的文件夹'; 
+		}
+		html_folder_panel+='{@each folders as item,index}'+
+		'<li>▶&nbsp;&nbsp;<a href="/${item.id}/files">${item.name}&nbsp;&nbsp;({@if !item.file_count}0{@else}${item.file_count}{@/if})</a></li>'+
+		'{@/each}';
+		var tpl_folder_panel=juicer(html_folder_panel);
+			
+	    $.ajax({//是否关注了此人
+			type: "POST",
+			url: "/isfollow/"+<%=user_id%>,
+			success:function(data){
+			    if(data.flag == 'success')//已关注了此人
+					$('#follow_area').html('<a href="javascript:void(0)" onclick="unfollow('+<%=user_id%>+');"  class="btn wbtn fr">取消关注</a>');
+			    else
+			        $('#follow_area').html('<a href="javascript:void(0)" onclick="follow('+<%=user_id%>+');" class="btn btn-success fr">+&nbsp;加关注</a>');
+			},
+		  	error:function(){}
+		});
+	    
+	    $.ajax({//得到基本信息
+			type: "POST",
+			url: "/userinfo/user/"+<%=user_id%>,
+			success:function(data){
+			    $('#user_card').html(tpl_user_card.render(data));
+			},
+		  	error:function(){}
+		});
+	    $.ajax({//得到用户文章分类
+			type: 'POST',
+			url: '/userinfo/category/'+<%=user_id%>,
+			success:function(data){
+			    $('#caregory_panel').html(tpl_caregory_panel.render(data));
+			},
+		  	error:function(){}
+		});
+	    
+	    <%if(isCurrentUser){%>
+	    $.ajax({//得到用户网盘文件夹
+			type: "POST",
+			url: "/userinfo/folder",
+			success:function(data){
+			    $('#folder_panel').html(tpl_folder_panel.render(data));
+			},
+		  	error:function(){}
+		});
+	    <%}else{%>
+	    	$('#folder_panel').html('<a class="btn btn-info" style="color:white;margin:20px;" href="/<%=user_id%>/files/share">查看Ta的共享文件</a>');
+	    <%}%>
+	});
+	
+	function follow(to_follow_id){
+		$.ajax({
+			type: "POST",
+			url: "/follow/"+to_follow_id,
+			success:function(data){
+			    if(data.flag == 'success')
+					$('#follow_area').html('<a href="javascript:void(0)" onclick="unfollow('+to_follow_id+');"  class="btn wbtn fr">取消关注</a>');
+			    else if(data.flag == 'fail')
+			        alert(data.info);
+			    else
+			        alert('发生未知错误');
+			},
+		  	error:function(){alert('不能发送关注请求');}
+		});
+	}
+	
+	function unfollow(to_unfollow_id){
+		$.ajax({
+			type: "POST",
+			url: "/unfollow/"+to_unfollow_id,
+			success:function(data){
+			    if(data.flag == 'success')
+			        $('#follow_area').html('<a href="javascript:void(0)" onclick="follow('+to_unfollow_id+');" class="btn btn-success fr">+&nbsp;加关注</a>');
+			    else if(data.flag == 'fail')
+			        alert(data.info);
+			    else
+			        alert('发生未知错误');
+			},
+		  	error:function(){alert('不能发送取消关注请求');}
+		});
+	}
+
+</script>

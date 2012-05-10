@@ -1,7 +1,7 @@
 var async = require('async');
 var mysql = require('../lib/mysql.js');
 var Util = require('../lib/util.js');
-var common = require('./common.js');
+var common = require('./common/common.js');
 
 /**
  * 创建消息
@@ -33,19 +33,6 @@ exports.view_messages = function (req, res, next){
     var user_id = req.session.user.id;
   
     async.auto({
-        user_profile : function(cb) {
-            common.initSidebar(user_id, function(err, result) {
-                if (err) {
-                    log.error('查看消息时，查找用户信息错误');
-                    cb(null, {});
-                }
-                if (!result || !result.user) {
-                    log.error('查看消息时，查找不到用户');
-                    cb(null, {});
-                }
-                cb(null, result);
-            });
-        },
         unread_messages : function(cb) {// 未读消息
             mysql.query('select id, type, user_id, content, DATE_FORMAT(create_at,"%Y-%m-%d %H:%i:%s") as create_at from message where user_id = ? and is_read = ? order by create_at desc', [ user_id, 0 ], function(err, unread_messages){
                 if (err || !unread_messages) {
@@ -72,8 +59,7 @@ exports.view_messages = function (req, res, next){
 
         res.render('message/index',{
             unread_messages:results.unread_messages,
-            hasread_messages:results.hasread_messages,
-            result:results.user_profile,
+            hasread_messages:results.hasread_messages
         });
         return;
     });

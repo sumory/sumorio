@@ -1,6 +1,6 @@
 
-<div class="main-right">
-	<div class="right-body">
+<div class="main-body">
+
 		<div class='panel'>
 			<div class='header'>
 				<span class='col_fade'>未读信息</span>
@@ -10,8 +10,7 @@
 			
 			<div class='cell'>
 				<a id='mark_all_messages_btn' href='/messages/mark_all_read'  class='btn fr'>标记所有消息为已读</a>
-				<div class='sep10'></div>
-				<div class='sep10'></div>
+				<div class='sep10'></div><div class='sep10'></div><div class='sep10'></div><div class='sep10'></div>
 			</div>
 			<% } else { %>
 
@@ -30,8 +29,11 @@
 
 			<% } %>
 		</div>
-	</div>
+		<div class='sep10'></div>
+		<div class='sep10'></div>
+		<div class='sep10'></div>
+
 </div>
 
 
-<%- partial('user/sidebar', { collections:result, as: 'result' }) %>
+<%-partial('user/profile',{object:locals.current_user.id, as:'user_id'})%>
