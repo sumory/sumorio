@@ -11,7 +11,7 @@ app.configure(function() {
     app.set('view engine', 'html');
     app.set('views', __dirname + '/view');
     app.register('.html', require('ejs'));
-    app.use(express.bodyParser());
+    app.use(express.bodyParser({uploadDir:config.tmp_upload_path}));
     app.use(express.cookieParser());
     app.use(express.session({
         secret : config.session_secret,

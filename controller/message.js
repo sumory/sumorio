@@ -4,19 +4,39 @@ var Util = require('../lib/util.js');
 var common = require('./common/common.js');
 
 /**
- * 创建消息
+ * 创建消息，消息发送给user_id
  */
 exports.create_message = function (type, user_id, content, cb){
     var create_at = Util.format_date(new Date());
     mysql.insert('insert into message(type, user_id, content, create_at) values(?,?,?,?)', [ type, user_id, content, create_at ], function(err, info) {
         if (err) {
-            log.error('发送消息失败[' + type + ',' + user_id + ',' + content + ']');
+            log.error('create_message发送消息失败[' + type + ',' + user_id + ',' + content + ']');
             if(cb && typeof cb == 'function')
                 cb(false);
         }
         if(cb && typeof cb == 'function')
             cb(true);
     });
+};
+
+/**
+ * 批量创建消息，消息发送给user_id的所有好友
+ */
+exports.batch_create_message = function (type, user_id, content, cb){
+    var create_at = Util.format_date(new Date());
+    common.get_all_followers(user_id, function(err, users){
+        console.log(users);
+        async.forEach(users, function(user, callback) {
+            mysql.insert('insert into message(type, user_id, content, create_at) values(?,?,?,?)', [ type, user.id, content, create_at ], function(err, info) {
+                if (err) {
+                    log.error('batch_create_message发送消息失败[' + type + ',' +  user.id + ',' + content + ']');
+                }
+                callback();
+            });
+        }, function(err) {
+            cb(err);
+        });
+    });  
 };
 
 /**

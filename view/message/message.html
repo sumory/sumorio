@@ -41,6 +41,13 @@
 		已取消关注你
 	</span>
 	<% } %>
+	
+	<% if(message.type == 6){ %>
+	<span>
+		<a href='/user/<%= content.from_user_id %>' target='_blank'><%= content.from_user_name %></a> 
+		分享了文件 <a href='/file/<%=content.file_id%>'><%=content.file_name%></a>
+	</span>
+	<% } %>
 
 	<span class='fr' style="color:#ccc"><%=message.create_at%></span>
 </div>

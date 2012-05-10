@@ -2,11 +2,13 @@ var fs = require('fs');
 var path = require('path');
 var ndir = require('ndir');
 var async = require('async');
+var mod = require('express/node_modules/connect/node_modules/formidable');
 var mysql = require('../../lib/mysql.js');
 var Util = require('../../lib/util.js');
 var common = require('../common/common.js');
 var config = require('../../config.js').config;
-var mod = require('express/node_modules/connect/node_modules/formidable');
+var memssage_ctrl = require('../message.js');
+
 
 
 var upload_path = config.vdisk_path;
@@ -44,24 +46,32 @@ exports.upload_file = function(req, res, next) {
             var new_name = uid + time + ext;
             var userDir = path.join(upload_path, uid);
             ndir.mkdir(userDir, function(err) {
-                if (err)
-                    return next(err);
+                if (err){
+                    console.log(err);
+                    res.json({ state : 'falied'});
+                    return;
+                }
+                
                 var new_path = path.join(userDir, new_name);
                 fs.rename(file.path, new_path, function(err) {
                     if (err) {
-                        return next(err);
+                        console.log(err);
+                        res.json({ state : 'falied'});
+                        return;
+                    }
+                    else{
+                        var result = {};
+                        result.hashname = new_name;
+                        result.name = name;
+                        result.mime = file.type;
+                        result.size = file.length;
+                        res.json({
+                            state : 'success',
+                            result : result
+                        });
+                        return;
                     }
                     
-                    var result = {};
-                    result.hashname = new_name;
-                    result.name = name;
-                    result.mime = file.type;
-                    result.size = file.length;
-                    res.json({
-                        state : 'success',
-                        result : result
-                    });
-                    return;
                 });
             });
         }
@@ -94,13 +104,22 @@ exports.add_file = function(req, res, next) {
     
     mysql.insert('insert into file(name, user_id, folder_id, hash, size, mime, is_public, create_at, description) values(?,?,?,?,?,?,?,?,?)', [ file.name, user_id, folder_id, file.hashname, file.size, file.mime, is_public, Util.format_date(new Date()) ,description ], function(err, info) {
         if (err) {
-            console.log(err);
+            
             res.render('notify/notify', {
                 error : '保存文件到文件夹出错'
             });
             return;
         }
-        res.redirect('/file/upload');
+        else{
+          //发消息
+            var mbody = {};
+            mbody.from_user_id = req.session.user.id;
+            mbody.from_user_name = req.session.user.loginname;
+            mbody.file_id = info.insertId;
+            mbody.file_name = file.name;
+            memssage_ctrl.batch_create_message(common.MessageType.share_file, req.session.user.id, JSON.stringify(mbody), function(err){});
+            res.redirect('/file/'+info.insertId);
+        }
     });
 };
 
@@ -195,8 +214,16 @@ exports.set_file_public = function(req, res, next) {
             return;
         }
         else{
-            res.json({flag : 'success'});
-            return;
+            mysql.queryOne('select * from file where id = ?', [file_id], function(err, file){
+                var mbody = {};
+                mbody.from_user_id = user_id;
+                mbody.from_user_name = req.session.user.loginname;
+                mbody.file_id = file_id;
+                mbody.file_name = file.name;
+                memssage_ctrl.batch_create_message(common.MessageType.share_file, user_id, JSON.stringify(mbody), function(err){});
+                res.json({flag : 'success'});
+                return;
+            }); 
         }
     });
 };
@@ -256,13 +283,13 @@ exports.view_file = function(req, res, next){
                     return;
                 }
                 else{//文件私有
-                    res.render('notify/notify', {error : '您不具备查看该文件权限'});
+                    res.render('notify/notify', {error : '文件现在状态为私密,您不具备查看该文件权限'});
                     return;
                 }
             }
         }
         else{
-            res.render('notify/notify', {error : '您查找的文件不存在'});
+            res.render('notify/notify', {error : '您查找的文件不存在或已被删除'});
             return;
         }
     });

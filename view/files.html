@@ -6,10 +6,10 @@
 		<%if(new_files &&　new_files.length>0){%>
 		<table class='table folder_files_table' style="width:720px;margin:20px;">
 			<thead>
-				<th width=120px>文件名</th>
-				<th width=60px>大小</th>
+				<th width=210px>文件名</th>
+				<th width=30px>大小</th>
 				<th width=60px>分享者</th>
-				<th width=80px>下载量</th>
+				<th width=30px>下载量</th>
 			</thead>
 			<tbody>
 			<%-partial('file_item',{collection:new_files,as:'file'}) %>
@@ -27,10 +27,10 @@
 		<%if(hot_files &&　hot_files.length>0){%>
 		<table class='table folder_files_table' style="width:720px;margin:20px;">
 			<thead>
-				<th width=120px>文件名</th>
-				<th width=60px>大小</th>
+				<th width=210px>文件名</th>
+				<th width=30px>大小</th>
 				<th width=60px>分享者</th>
-				<th width=80px>下载量</th>
+				<th width=30px>下载量</th>
 			</thead>
 			<tbody>
 			<%-partial('file_item',{collection:hot_files,as:'file'}) %>
