@@ -1,7 +1,7 @@
 var async = require('async');
 var sanitize = require('validator').sanitize;
-var mysql = require('../lib/mysql.js');
-var common = require('./common.js');
+var mysql = require('../../lib/mysql.js');
+var common = require('../common/common.js');
 
 /**
  * 得到用户的所有文章分类
@@ -9,7 +9,7 @@ var common = require('./common.js');
  * @param user_id
  * @param callback
  */
-exports.get_all_categories = function(user_id, callback) {
+function get_all_categories(user_id, callback) {
     mysql.query('select * from category where user_id = ? order by sequence asc', [ user_id ], function(err, categories) {
         if (err) {
             callback(err, []);
@@ -18,6 +18,30 @@ exports.get_all_categories = function(user_id, callback) {
         return;
     });
 };
+
+/**
+ * 得到某一文章分类
+ * 
+ * @param user_id
+ * @param category_id
+ * @param callback
+ */
+function get_category(category_id, callback) {
+    mysql.queryOne('select * from category where id =?', [category_id ], function(err, category) {
+        if (err) {
+            callback(err, {});
+        }
+        callback(err, category);
+        return;
+    });
+};
+
+exports.get_all_categories = get_all_categories;
+exports.get_category = get_category;
+
+
+
+
 
 /**
  * 点击编辑所有分类
@@ -33,18 +57,16 @@ exports.edit_categories = function(req, res, next) {
         });
         return;
     }
-
-    common.initSidebar(req.session.user.id, function(err, result) { // 获取用户页左侧sidebar数据
-        if (err) {
-            res.render('notify/notify', {
-                error : '查找用户信息出错'
+    get_all_categories(req.session.user.id,function(err,categories){
+        if(err || !categories){
+            cb(null,[]);
+        }
+        else{
+            res.render('category/edit_all', {
+                categories : categories
             });
             return;
         }
-        res.render('category/edit_all', {
-            result : result
-        });
-        return;
     });
 };
 
@@ -66,42 +88,33 @@ exports.edit_category = function(req, res, next) {
     var user_id = req.session.user.id;
     var category_id = req.params.category_id;
 
-    async.parallel({// 并行执行
-        sidebar_data : function(cb) {
-            common.initSidebar(user_id, function(err, result) {// 获取左侧bar数据
-                if (err) {
-                    cb(err, '查找用户数据时发生错误');
-                }
-                cb(null, result);// 将得到的数据传递给key(sidebar_data)
-            });
-        },
-        category : function(cb) {// 获取要编辑的分类数据
-            mysql.queryOne('select * from category where user_id = ? and id = ?', [ user_id, category_id ], function(err, category) {
-                if (err) {
-                    cb(err, '无法获分类:' + category_id);
-                }
-                cb(null, category);
-            });
-        }
-    }, function(err, data) {// 并行完成后最终执行,有一个出错则结束执行，调用此方法
-        if (err) {
-            var errStr = '';
-            for ( var err_key in data) {
-                if (typeof data[err_key] === 'string')
-                    errStr += data[err_key];
-            }
-            res.render('notify/notify', {
-                error : errStr
+    get_category(category_id, function(err, category){
+        if(err){
+            res.render('category/edit', {
+                category : {},
+                categories : []
             });
             return;
         }
-        res.render('category/edit', {
-            result : data.sidebar_data,// 左侧bar数据
-            category : data.category
-        // 查到的要更改的category
-        });
-        return;
-    });
+        else{
+            get_all_categories(user_id, function(err,categories){
+                if(err || !categories){
+                    res.render('category/edit', {
+                        category : {},
+                        categories : []
+                    });
+                    return;
+                }
+                else{
+                    res.render('category/edit', {
+                        category : category,
+                        categories : categories
+                    });
+                    return;
+                }
+            });
+        }
+    });  
 };
 
 /**
@@ -123,15 +136,14 @@ exports.modify_category = function(req, res, next) {
     var category_id = req.params.category_id;
 
     async.parallel({// 并行执行
-        sidebar_data : function(cb) {
-            common.initSidebar(user_id, function(err, result) {// 获取左侧bar数据
-                if (err) {
-                    res.render('notify/notify', {
-                        error : '查找用户数据时发生错误'
-                    });
-                    return;
+        categories : function(cb){
+            get_all_categories(user_id,function(err,categories){
+                if(err || !categories){
+                    cb(null,[]);
                 }
-                cb(null, result);// 将得到的数据传递给key(sidebar_data)
+                else{
+                    cb(null,categories);
+                }
             });
         },
         info : function(cb) {// 编辑分类
@@ -156,11 +168,12 @@ exports.modify_category = function(req, res, next) {
             });
             return;
         }
-        res.render('category/edit_all', {
-            result : data.sidebar_data
-        // 左侧bar数据(包括用户基本数据和文章分类数据，所以不用再查找所有分类)
-        });
-        return;
+        else{
+            res.render('category/edit_all', {
+                categories : data.categories
+            });
+            return;
+        }
     });
 };
 
@@ -227,7 +240,6 @@ exports.delete_category = function(req, res, next) {
             });
             return;
         }
-        console.log(kvs.length);
         if (kvs && kvs.length > 0) {
             res.render('notify/notify', {
                 error : ' 删除分类时请先把该分类下文章移到其它分类下'

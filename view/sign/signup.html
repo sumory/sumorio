@@ -1,5 +1,8 @@
 
-	<div class='panel' style="width:600px;margin:auto;margin-top:50px;">
+	<div class='panel'>
+		<div class='header'>
+			<span class='col_fade'>注册</span>
+		</div>
 		<div class='inner'>
 			<div class='sep10'></div>
 			<div class='sep10'></div>
@@ -14,42 +17,45 @@
 				<strong><%= success %></strong>
 			</div>
 			<% } else{ %>
-			<form id='signup_form' action='/signup' method='post'>
+			<form id='signup_form' action='/signup' method='post' class="form-horizontal">
 				<div class='control-group'>
 					<label class='control-label' for='name'>用户名</label>
 					<div class='controls'>
 						<% if(locals.name){ %>
-						<input id='name' name='name' size='30' type='text' value='<%= name %>' />
+						<input id='name' class='input-xlarge' name='name' size='30' type='text' value='<%= name %>' />
 						<% }else{ %>
-						<input id='name' name='name' size='30' type='text' value='' />
+						<input id='name' class='input-xlarge' name='name' size='30' type='text' value='' />
 						<% } %>
 					</div>
 				</div>
 				<div class='control-group'>
 					<label class='control-label' for='pass'>密码</label>
 					<div class='controls'>
-						<input id='pass' name='pass' size='30' type='password' />
+						<input id='pass' class='input-xlarge' name='pass' size='30' type='password' />
 					</div>
 				</div>
 				<div class='control-group'>
 					<label class='control-label' for='re_pass'>确认密码</label>
 					<div class='controls'>
-						<input id='re_pass' name='re_pass' size='30' type='password' />
+						<input id='re_pass' class='input-xlarge' name='re_pass' size='30' type='password' />
 					</div>
 				</div>
 				<div class='control-group'>
 					<label class='control-label' for='email'>电子邮箱</label>
 					<div class='controls'>
 						<% if(locals.email){ %>
-						<input id='email' name='email' size='30' type='text' value='<%= email %>' />
+						<input id='email' class='input-xlarge' name='email' size='30' type='text' value='<%= email %>' />
 						<% }else{ %>
-						<input id='email' name='email' size='30' type='text' />
+						<input id='email' class='input-xlarge' name='email' size='30' type='text' />
 						<% } %>
 					</div>
 				</div>
 				<input type='hidden' name='_csrf' value='<%= csrf %>' />
 				<div class='control-group'>
-					<input type='submit' class='btn' value='注册' />
+					<label class='control-label'></label>
+					<div class='controls'>
+						<input type='submit' class='btn btn-primary btn-large' value='注册' />
+					</div>
 				</div>
 			</form>
 			<% } %>

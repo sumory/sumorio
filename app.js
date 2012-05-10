@@ -50,6 +50,9 @@ app.configure('production', function() {
 
 // routes
 app.get('/', routes.site_index);
+app.post('/userinfo/user/:user_id', routes.userinfo_user);
+app.post('/userinfo/category/:user_id', routes.userinfo_category);
+app.post('/userinfo/folder', routes.userinfo_folder);
 
 // 注册登录相关
 app.get('/signup', routes.signup);
@@ -67,7 +70,12 @@ app.get('/category/:category_id/delete', routes.delete_category);
 
 // 用户相关
 app.get('/user/:id', routes.user_index);
+app.get('/avatar', routes.user_atavar);
+app.post('/avatar/update', routes.update_user_avatar);
+app.get('/pwd', routes.user_pwd);
+app.post('/pwd/update', routes.update_user_pwd);
 app.get('/users', routes.users);
+app.post('/positive_users', routes.positive_users);
 
 // 文章相关
 app.get('/archive/create', routes.create_archive);
@@ -103,6 +111,28 @@ app.get('/:user_id/follower', routes.view_followers);
 app.post('/messages/unread', routes.unread_message_count);
 app.get('/messages', routes.view_messages);
 app.get('/messages/mark_all_read', routes.mark_all_read);
+
+
+//folder相关
+app.get('/folders/edit', routes.edit_all_folders);
+app.get('/folder/:folder_id/edit', routes.edit_folder);
+app.post('/folder/:folder_id/modify', routes.modify_folder);
+app.post('/folder/add', routes.add_folder);
+app.get('/folder/:folder_id/delete', routes.delete_folder);
+
+//file相关
+app.post('/file/upload', routes.upload_file);
+app.get('/file/upload', routes.to_upload_file);
+app.post('/file/add', routes.add_file);
+app.get('/:folder_id/files', routes.view_folder_files);
+app.post('/file/:file_id/private', routes.set_file_private);
+app.post('/file/:file_id/public', routes.set_file_public);
+app.post('/file/:file_id/delete', routes.delete_file);
+app.get('/file/:file_id', routes.view_file);
+app.post('/file/:file_id/tofolder/:folder_id', routes.change_file_folder);
+app.get('/:user_id/files/share', routes.user_share_files);
+app.get('/file/:file_id/download', routes.download_file);
+app.get('/files', routes.files);
 
 app.listen(config.app_port);
 console.log("Sumorio is listening on port %d in %s mode", app.address().port, app.settings.env);

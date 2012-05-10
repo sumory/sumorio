@@ -286,7 +286,7 @@
         autoHeightEnabled:true, //是否自动长高
         autoFloatEnabled:true, //是否保持toolbar的位置不动
         elementPathEnabled:false, //是否启用elementPath
-        wordCount:true, //是否开启字数统计
+        wordCount:false, //是否开启字数统计
         maximumWords:20000, //允许的最大字符数
         tabSize:4, //tab的宽度
         tabNode:'&nbsp;', //tab时的单一字符

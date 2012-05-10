@@ -1,0 +1,41 @@
+<div class="main-body">
+	<%if(new_files &&　new_files.length>0){%>
+	<div class='panel'>
+		<div class='header' style='height:28px;line-height:28px;'>
+			<span class='col_fade'><i class="icon-time"></i> 最新上传的文件</span>
+		</div>
+		<table class='table folder_files_table' style="width:720px;margin:20px;">
+			<thead>
+				<th width=120px>文件名</th>
+				<th width=60px>大小</th>
+				<th width=60px>分享者</th>
+				<th width=80px>下载量</th>
+			</thead>
+			<tbody>
+			<%-partial('file_item',{collection:new_files,as:'file'}) %>
+			</tbody>
+		</table>
+	</div>
+	<%}%>
+	
+	<%if(hot_files &&　hot_files.length>0){%>
+	<div class='panel'>
+		<div class='header' style='height:28px;line-height:28px;'>
+			<span class='col_fade'><i class="icon-hand-up"></i> 最多下载的文件</span>
+		</div>
+		<table class='table folder_files_table' style="width:720px;margin:20px;">
+			<thead>
+				<th width=120px>文件名</th>
+				<th width=60px>大小</th>
+				<th width=60px>分享者</th>
+				<th width=80px>下载量</th>
+			</thead>
+			<tbody>
+			<%-partial('file_item',{collection:hot_files,as:'file'}) %>
+			</tbody>
+		</table>
+	</div>
+	<%}%>
+</div>
+
+<%-partial('side')%>

@@ -1,0 +1,70 @@
+
+<div class="main-body">
+		<div class='panel'>
+			<div class='header'>
+				<span class='col_fade'>修改头像</span>
+			</div>
+			<div class='inner'>
+				<form class='form-horizontal' style="margin-top:20px;">
+						<div class="control-group">
+							<label class="control-label">当前头像</label>
+							<div class="controls">
+								<img id='current_avatar' style='padding:4px;width:70px;border:1px solid #eee' src='<%=user.avatar%>'/>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">选择文件</label>
+							<div class="controls">
+								<a onclick="chooseAvatar()" href='javascript:void(0)' class="btn btn-info">选择文件</a>
+								<a id="link_upload_file" onclick="uploadAvatar()" href='javascript:void(0)' class="btn btn-info" style="display:none;"'>上传</a>
+								<div style="height:15px;width:100px;"></div>
+								<span  class="label label-info" id="file_name_span">提示信息</span>
+							</div>
+						</div>
+				</form>
+
+				<form id="avatarForm" action="/avatar/update" method="post" target="hidden_frame" enctype="multipart/form-data" style="visibility:hidden;">
+					<input type="file" name="avatar" onchange="changeFileChoose(this);" />
+					<input type="submit" id="upload_submit_button"/>
+				</form>
+				<!-- 隐藏提交iframe -->
+				<iframe name="hidden_frame" id="hidden_frame" style="display:none"></iframe>
+
+				<script type="text/javascript" src="/libs/jquery/jquery.form.js"></script>
+				<script>
+					$('#avatarForm').ajaxForm({
+					    complete : function(xhr) {
+					        var data = xhr.responseText;
+					        data = eval("(" + data + ")");
+					        if (data.state=='success') {
+					            $('#file_name_span').html($('#file_name_span').text()+":上传成功");
+					            $('#current_avatar').attr('src', data.url);
+					        }
+					        else {
+					            alert('修改头像失败');
+					        }
+					    }
+					});
+					
+				    function chooseAvatar() {
+				        $("input[name='avatar']").click();
+				        $('#link_upload_file').show();
+				    }
+				    
+				    function changeFileChoose(obj){		
+				        $('#link_upload_file').show();
+						$('#file_name_span').html(obj.value);
+					}
+				    
+				    function uploadAvatar(obj){
+				        $('#link_upload_file').hide();
+				        $('#upload_submit_button').click();
+				    }
+				    
+				    
+				</script>
+			</div>
+		</div>
+</div>
+
+<%-partial('user/profile',{object:locals.current_user.id,as:'user_id'})%>

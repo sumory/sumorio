@@ -1,0 +1,39 @@
+<tr id="file_tr_<%=file.id%>">
+	<td>
+		<div style='float:left;width:40px;'><a class="disk_icon32_v2 disk_<%=file.name.substring(file.name.lastIndexOf('.')+1)%>" href="/file/<%=file.id%>" title="<%=file.name%>"></a></div>
+		<div style='float:left;line-height:32px;'><a href="/file/<%=file.id%>" title="<%=file.name%>"><%= file.name.substring(0,35) %></a></div>
+	</td>
+	<td style='line-height:32px;'>
+	<%
+	var bytevalue = file.size;
+	if(bytevalue<1024){
+	%>
+    <%=bytevalue%> Bytes
+    <%}
+    else if(bytevalue>=1024 && bytevalue<1024*1024){
+    %>
+    <%=Math.round(bytevalue/1024)%> K
+    <%}
+    else if(bytevalue>=1024*1024 && bytevalue<1024*1024*1024){
+    %>
+    <%=Math.round(bytevalue/1024/1024)%> M
+    <%}%>
+	</td>
+	<%if(locals.current_user && locals.current_user.id==user_id){%>
+	<td style='line-height:32px;'><span id='isPublicLabel_<%=file.id%>'><%if(file.is_public==1){%>公开<%}else{%>私密<%}%></span></td>
+	<td style='line-height:32px;'>
+		<div class="btn-group">
+
+          <a class="btn btn-danger dropdown-toggle" data-toggle="dropdown" href="#">操作 <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <%if(file.is_public==1){%>
+			<li id='setVisibleLi_<%=file.id%>'><a  href="javascript:void(0)" onclick="setPrivate(<%=file.id%>)"><i class="icon-ban-circle"></i> 设为私密</a></li>
+			<%}else{%>
+			<li id='setVisibleLi_<%=file.id%>'><a  href="javascript:void(0)" onclick="setPublic(<%=file.id%>)"><i class="icon-folder-open"></i> 设为公开</a></li>
+			<%}%>
+			<li><a href="javascript:void(0)" onclick="deleteFile(<%=file.id%>)"><i class="icon-trash"></i> 删除</a></li>
+          </ul>
+        </div>
+	</td>
+	<%}%>
+</tr>

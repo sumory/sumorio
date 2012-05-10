@@ -1,0 +1,102 @@
+
+<div class="main-body">
+		<div class='panel'>
+			<div class='header'>
+				<span class='col_fade'>文件 <span class="label label-important"><%= file.name.substring(0,50) %></span> 详细信息</span>
+			</div>
+			<div class='inner'>
+				<form class="form-horizontal">
+			        <fieldset>
+			          <div class="control-group">
+			            <label class="control-label">文件名称</label>
+			            <div class="controls">
+			              <input class="disabled input-xlarge" type="text" disabled="disabled" value="<%=file.name%>"/>
+			            </div>
+			          </div>
+			          <div class="control-group">
+			            <label class="control-label">文件大小</label>
+			            <div class="controls">
+			              <input class="disabled input-xlarge" type="text" disabled="disabled" value="<%= file.size%>"/>
+			            </div>
+			          </div>
+			          <div class="control-group">
+			            <label class="control-label">文件类型</label>
+			            <div class="controls">
+			              <input class="disabled input-xlarge" type="text" disabled="disabled" value="<%= file.mime%>"/>
+			            </div>
+			          </div>
+			          <div class="control-group">
+			            <label class="control-label">是否公开</label>
+			            <div class="controls">
+			              <input class="disabled input-xlarge" type="text" disabled="disabled" value="<%= file.is_public%>"/>
+			            </div>
+			          </div>
+			          <div class="control-group">
+			            <label class="control-label">创建时间</label>
+			            <div class="controls">
+			              <input class="disabled input-xlarge" type="text" disabled="disabled" value="<%= file.create_at%>"/>
+			            </div>
+			          </div>
+			          
+			          
+			          <%if(isOwner){%>
+			          <div class="control-group">
+			            <label class="control-label">所属文件夹</label>
+			            <div class="controls">
+			              <select class="input-xlarge" onchange="changeFolder(this.value,<%=file.id%>)" value='<%=file.folder_id%>'>
+			              <%
+			              	for(var i = 0; i < folders.length; i++){
+			              		if(folders[i].id == file.folder_id){
+			              %>
+			                <option value='<%=folders[i].id%>' selected='selected'><%=folders[i].name%></option>
+			              <%
+			              		}else{
+			              %>
+			                <option value='<%=folders[i].id%>'><%=folders[i].name%></option>
+			              <%
+			              		}
+			              	}
+			              %>
+			              </select>
+			              <span class="help-inline"><a href='#' class='bs_tooltip' rel="tooltip" title="下拉选择文件夹将文件移动到目标处">提示</a></span>
+			            </div>
+			          </div>
+					  <%}else{%>
+					  <%}%>
+					  <div class="control-group">
+							<label class="control-label">描述</label>
+							<div class="controls">
+								<input class="disabled input-xlarge" type="text" disabled="disabled"  name='description' value='<%=file.description%>'/>
+							</div>
+					 </div>
+					  
+					  <div class="control-group">
+			            <label class="control-label"></label>
+			            <div class="controls">
+			              <a href="/file/<%=file.id%>/download" class="btn btn-success"><i class="icon-download icon-white"></i> 下载</a>
+			            </div>
+			          </div>
+			        </fieldset>
+			      </form>
+
+			</div>
+		</div>
+</div>
+
+<%-partial('user/profile',{object:file.user_id, as:'user_id'})%>
+
+
+<script>
+	$('.bs_tooltip').tooltip({});
+	function changeFolder(folderId,fileId){
+	    $('.help-inline').html('正在修改...');
+	    $.ajax({
+	        type : "POST",
+	        url : "/file/"+fileId+"/tofolder/"+folderId,
+	        success : function(data) {
+				$('.help-inline').html(data.msg || '');
+	        },
+	        error : function() {$('.help-inline').html('修改请求发生错误');}
+	    });
+	}
+</script>

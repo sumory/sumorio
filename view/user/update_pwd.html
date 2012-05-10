@@ -1,0 +1,76 @@
+
+<div class="main-body">
+		<div class='panel'>
+			<div class='header'>
+				<span class='col_fade'>修改密码</span>
+			</div>
+			<div class='inner'>
+				<form class='form-horizontal' method='post' action='' style="margin-top:20px;">
+						<div class="control-group">
+							<label class="control-label">原密码</label>
+							<div class="controls">
+								<input class="input-xlarge" name="old_pwd" size="30" type="text">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">新密码</label>
+							<div class="controls">
+								<input class="input-xlarge" name="new_pwd" size="30" type="text">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label">重复新密码</label>
+							<div class="controls">
+								<input class="input-xlarge" name="re_new_pwd" size="30" type="text">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label"></label>
+							<div class="controls">
+								<a class="btn" href='javascript:void(0)' onclick='changePwd()'>修改</a>
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label"></label>
+							<div class="controls" id='update_result'>
+								
+							</div>
+						</div>
+				</form>
+				<script>
+
+				    function changePwd(){
+				        var old_pwd = $('input[name="old_pwd"]').val();
+				        var new_pwd = $('input[name="new_pwd"]').val();
+				        var re_new_pwd = $('input[name="re_new_pwd"]').val();
+				        if(old_pwd==''||new_pwd==''){
+				            $('#update_result').html('<div class="alert alert-error">输入不能为空</div>');
+				            return;
+				        }
+				        if(re_new_pwd!=new_pwd){
+				            $('#update_result').html('<div class="alert alert-error">两次输入的新密码不一致</div>');
+				            return;
+				        }
+				        $.ajax({
+							type: 'POST',
+							url: '/pwd/update',
+							data:{old_pwd:old_pwd,new_pwd:new_pwd},
+							success:function(data){
+							    if(data.state == 'success'){
+							        $('#update_result').html('<div class="alert alert-success">'+data.msg+'</div>');
+							    }
+							    else{
+								    $('#update_result').html('<div class="alert alert-error">'+data.msg+'</div>');
+							    }
+							},
+						  	error:function(){}
+						});
+				    }
+				    
+				    
+				</script>
+			</div>
+		</div>
+</div>
+
+<%-partial('user/profile',{object:locals.current_user.id,as:'user_id'})%>

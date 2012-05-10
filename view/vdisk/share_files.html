@@ -1,0 +1,24 @@
+<div class="main-body">
+	<div class='panel'>
+		<div class='header' style='height:28px;line-height:28px;'>
+			<span class='col_fade'>该用户共<span id="file_count_span" class="label label-important"><%=files.length%></span>个共享文件</span>
+		</div>
+		<%if(files &&　files.length>0){%>
+		<table class='table folder_files_table' style="width:720px;margin:20px;">
+			<thead>
+				<th width=520px>文件名</th>
+				<th width=60px>大小</th>
+				<%if(locals.current_user && locals.current_user.id==user_id){%>
+				<th width=60px>状态</th>
+				<th width=80px>编辑</th>
+				<%}%>
+			</thead>
+			<tbody>
+			<%-partial('vdisk/file_item',{collection:files,as:'file'}) %>
+			</tbody>
+		</table>
+		<%}%>
+	</div>
+</div>
+
+<%-partial('user/profile',{object:user_id, as:'user_id'})%>

@@ -1,12 +1,5 @@
 
-<%
-var categories=result.categories;
-%>
-<div class="main-right">
-
-			<div class="right-body">
-
-
+<div class="main-body">
 
 	<div class='panel' style="box-shadow:0 0 0;">
 		<div class='header'>
@@ -14,7 +7,6 @@ var categories=result.categories;
 		</div>
 		<div class='inner'>
 			<form id='edit_category_form' class='form-horizontal' action='/category/<%= category.id %>/modify' method='post'>
-				<legend></legend>
 				<div class='control-group'>
 					<label class='control-label' for='name'>名字</label>
 					<div class='controls'>
@@ -42,13 +34,15 @@ var categories=result.categories;
 
 				<input type='hidden' name='_csrf' value='<%= csrf %>' />
 				<div class='control-group'>
-					<input type='submit' class='btn' value='保存' />
+					<label class='control-label'></label>
+					<div class='controls'>
+						<input type='submit' class='btn' value='保存' />
+					</div>
 				</div>
 			</form>
 		</div>
 	</div>
 
-			</div>
 
 </div>
-<%- partial('user/sidebar',{collections:result,as:'result'}) %>
+<%-partial('user/profile',{object:locals.current_user.id, as:'user_id'})%>>

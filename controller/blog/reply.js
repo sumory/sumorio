@@ -1,10 +1,10 @@
 var check = require('validator').check;
 var	sanitize = require('validator').sanitize;
 var async = require('async');
-var Util = require('../lib/util.js');
-var mysql = require('../lib/mysql.js');
-var common = require('./common.js');
-var memssage_ctrl = require('./message.js');
+var Util = require('../../lib/util.js');
+var mysql = require('../../lib/mysql.js');
+var common = require('../common/common.js');
+var memssage_ctrl = require('../message.js');
 
 /**
  * 发布一级回复：即回复文章

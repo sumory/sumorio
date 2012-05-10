@@ -1,0 +1,93 @@
+
+<div class="main-body">
+		<div class='panel'>
+			<div class='header'>
+				<span class='col_fade'>所有文件夹</span>
+			</div>
+			<div class='inner'>
+				<% if(folders && folders.length > 0 ){ %>
+				<table class='table'>
+					<thead>
+						<th width=60px>序号</th>
+						<th width=120px>文件夹名</th>
+						<th width=100px>编辑</th>
+						<th width=100px>删除</th>
+					</thead>
+					<tbody><%-
+						partial('vdisk/folder_can_edit',{collection:folders,as:'folder'})
+						%>
+					</tbody>
+				</table>
+				<% }else{ %>
+				<p>未创建文件夹</p>
+				<% } %>
+			</div>
+		</div>
+
+		<div class='panel'>
+			<div class='header'>
+				<span class='col_fade'>添加文件夹</span>
+			</div>
+			<div class='inner'>
+				<% if(locals.edit_error){ %>
+				<div class="alert alert-error">
+					<a class="close" data-dismiss="alert" href="#">&times;</a> <strong><%=
+						edit_error %></strong>
+				</div>
+				<% } %>
+				<form id='add_tag_form' class='form-horizontal'	action='/folder/add' method='post'>
+					<div class='control-group'>
+						<label class='control-label' for='name'>文件夹名</label>
+						<div class='controls'>
+							<input class='input-xlarge' id='name' name='name' size='30'
+								type='text' />
+							<p class='help-block'>汉字或字母</p>
+						</div>
+					</div>
+					<div class='control-group'>
+						<label class='control-label' for='sequence'>序号</label>
+						<div class='controls'>
+							<select class='span2' name='sequence'> 
+							<% 
+							if(folders &&folders.length >= 0 ){ 
+								for(var i=0; i<=folders.length;i++){ 
+									if(i != folders.length){ 
+							%>
+								<option value='<%= i+1 %>'><%= i+1 %></option> 
+							<% 		}else{ %>
+								<option value='<%= i+1 %>' selected='selected'><%= i+1%></option> 
+							<% 		}
+								}
+							}
+							%>
+							</select>
+							<p class='help-block'>按此序号由小到大排序</p>
+						</div>
+					</div>
+					<input type='hidden' name='_csrf' value='<%= csrf %>' />
+					<div class='control-group'>
+						<label class='control-label'></label>
+						<div class='controls'>
+							<input type='submit' class='btn' value='添加' />
+						</div>
+					</div>
+					
+				</form>
+			</div>
+		</div>
+
+
+		<script type='text/javascript'>
+            $(document).ready(function() {
+                $('.delete_folder_btn').click(function() {
+                    if (confirm('确定要删除此文件夹吗？')) {
+                        window.location.href = $(this).attr('href');
+                    }
+                    return false;
+                });
+            });
+        </script>
+
+</div>
+
+<%-partial('user/profile',{object:locals.current_user.id, as:'user_id'})%>

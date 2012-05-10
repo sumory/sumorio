@@ -1,25 +1,21 @@
 
-<div class="main-right">
-
-			<div class="right-body">
-
-
+<div class="main-body">
 
 					<div class='panel'>
 						<div class='header'>
 							<span class='col_fade'>所有文章分类</span>
 						</div>
 						<div class='inner'>
-							<% if(result.categories && result.categories.length > 0 ){ %>
-							<table class='table' style="margin-left:10px;">
+							<% if(categories && categories.length > 0 ){ %>
+							<table class='table'>
 								<thead>
-									<th width=100px>序号</th>
-									<th width=100px>名字</th>
+									<th width=60px>序号</th>
+									<th width=120px>名字</th>
 									<th width=100px>编辑</th>
 									<th width=100px>删除</th>
 								</thead>
 								<tbody>
-								<%- partial('category/category_can_edit',{collection:result.categories,as:'category'}) %>
+								<%- partial('category/category_can_edit',{collection:categories,as:'category'}) %>
 								</tbody>
 							</table>
 							<% }else{ %>
@@ -40,7 +36,6 @@
 							</div>
 							<% } %>
 							<form id='add_tag_form' class='form-horizontal' action='/category/add' method='post'>
-								<legend></legend>
 								<div class='control-group'>
 									<label class='control-label' for='name'>名字</label>
 									<div class='controls'>
@@ -52,9 +47,9 @@
 									<label class='control-label' for='sequence'>序号</label>
 									<div class='controls'>
 									<select class='span2' name='sequence'>
-									<% if(result.categories && result.categories.length >= 0 ){ %>
-									<% for(var i=0; i<=result.categories.length; i++){ %>
-									<% if(i != result.categories.length){ %>
+									<% if(categories && categories.length >= 0 ){ %>
+									<% for(var i=0; i<=categories.length; i++){ %>
+									<% if(i != categories.length){ %>
 									<option value='<%= i+1 %>'><%= i+1 %></option>
 									<% }else{ %>
 									<option value='<%= i+1 %>' selected='selected'><%= i+1 %></option>
@@ -66,9 +61,13 @@
 									</div>
 								</div>
 								<input type='hidden' name='_csrf' value='<%= csrf %>' />
-								<div class='form-actions' style='width:400px;'>
-									<input type='submit' class='btn' value='添加' />
+								<div class='control-group'>
+									<label class='control-label'></label>
+									<div class='controls'>
+										<input type='submit' class='btn' value='添加' />
+									</div>
 								</div>
+								
 							</form>
 						</div>
 					</div>
@@ -85,8 +84,6 @@
 						});
 					</script>
 	
-			</div>
 
 </div>
-
-<%- partial('user/sidebar',{collections:result,as:'result'}) %>
+<%-partial('user/profile',{object:locals.current_user.id, as:'user_id'})%>
