@@ -136,6 +136,16 @@ body {
 	margin-right: 6px
 }
 
+#totop {
+	position: fixed;
+	bottom: 60px;
+	left: 50%;
+	margin-left: 510px;
+	background: url(../img/totop.png);
+	width: 38px;
+	height: 45px;
+}
+
 /**profile - user_card start**/
 .user{
 	line-height: 24px;
