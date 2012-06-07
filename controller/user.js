@@ -9,8 +9,8 @@ var mysql = require('../lib/mysql.js');
 var mod = require('express/node_modules/connect/node_modules/formidable');
 
 
-var path_prefix = '/user_data/avatar';
-var upload_path = path.join(path.dirname(__dirname), 'public' + path_prefix);
+var path_prefix = config.avatar_path;
+var upload_path = path.join(path.dirname(__dirname), '../public' + path_prefix);
 ndir.mkdir(upload_path, function(err) {
     if (err)
         throw err;

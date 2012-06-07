@@ -2,8 +2,8 @@ exports.config = {
 	name : 'sumorio',
 	description : 'sumorio 是基于Node.js开发的社区系统',
 	host : 'http://127.0.0.1',
-	session_secret : 'sumorio_secret',
-	auth_cookie_name : 'sumorio_secret',
+	session_secret : 'secret',
+	auth_cookie_name : 'secret',
 	app_port : 8081,
 	version : '0.2.0',
 

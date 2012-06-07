@@ -1,11 +1,10 @@
-
 var express = require('express');
 var routes = require('./route');
 var config = require('./config.js').config;
 
 var app = express.createServer();
-
 var static_dir = __dirname + '/public';
+var csrf = express.csrf();
 
 app.configure(function() {
     app.set('view engine', 'html');
@@ -18,13 +17,20 @@ app.configure(function() {
     }));
     // custom middleware
     app.use(routes.auth_user);
-    app.use(express.csrf());
+    app.use(function(req, res, next){
+	  if (req.body && req.method.toLowerCase()==='post')//
+	    return next();
+	  if (req.body && req.body.user_action === 'upload_image')//ignore uplaod image
+	    return next();
+	  csrf(req, res, next);
+	});
 });
 
-// set static,dynamic helpers
-app.helpers({
+
+app.helpers({// set static,dynamic helpers
     config : config
 });
+
 app.dynamicHelpers({
     csrf : function(req, res) {
         return req.session ? req.session._csrf : '';
@@ -99,7 +105,6 @@ app.post('/upload/image', routes.upload_image);
 //导航相关
 app.post('/nav/all', routes.all_navs);
 
-
 //follow相关
 app.post('/follow/:to_follow_id', routes.follow);
 app.post('/unfollow/:to_unfollow_id', routes.unfollow);
@@ -111,7 +116,6 @@ app.get('/:user_id/follower', routes.view_followers);
 app.post('/messages/unread', routes.unread_message_count);
 app.get('/messages', routes.view_messages);
 app.get('/messages/mark_all_read', routes.mark_all_read);
-
 
 //folder相关
 app.get('/folders/edit', routes.edit_all_folders);

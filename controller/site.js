@@ -3,6 +3,7 @@ var mysql = require('../lib/mysql.js');
 var Util = require('../lib/util.js');
 var common = require('./common/common.js');
 var user_ctrl = require('./user.js');
+
 /**
  * 网站首页主体数据
  */
@@ -84,7 +85,7 @@ function filter_archives(sql, params, func){
                         callback(null,archive);
                     });    
                 }, 
-                function(err,archives) {
+          function(err,archives) {
                     if(err){
                         func(null, []);
                     }
