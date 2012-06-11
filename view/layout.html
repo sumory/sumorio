@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<% if(locals.archive) { %>
-	<title><%= archive.title %></title> <% }else{ %>
+	<% if(locals.article) { %>
+	<title><%= article.title %></title> <% }else{ %>
 	<title><%= config.description %></title> <% } %>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -79,19 +79,6 @@
 	</div>
 
 	<script>
-        $.ajax({
-            type : "POST",
-            url : "/nav/all",
-            success : function(data) {
-                var navs = data.navs;
-                for ( var nav_index = 0; nav_index < navs.length; nav_index++) {
-                    $('#user_nav').before('<li><a href="/nav/'+navs[nav_index].id+'" class="nav no-icon">' + navs[nav_index].name + '</a></li>');
-                }
-            },
-            error : function() {
-            }
-        });
-
         <% if(locals.current_user){ %>
         $.ajax({
             type : "POST",

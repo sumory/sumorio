@@ -4,21 +4,21 @@
 			<span class='col_fade'>分类下文章</span>
 		</div>						
 		<div class='inner'>
-			<h3><%= archive.title %></h3>
+			<h3><%= article.title %></h3>
 			<div class='sep10'></div>	
 			<div class='topic_content'>
-				<%- archive.content %>
+				<%- article.content %>
 			</div>
 			<div class='sep10'></div><div class='sep10'></div>
 			<span class='col_fade'>分类：</span>
-			<%for(var cli=0;cli < archive_categories.length;cli++){%>
-				<a class='category_tag_link' href='/archives/<%=archive.author_id%>/<%=archive_categories[cli].id%>'><%=archive_categories[cli].name%></a>
+			<%for(var cli=0;cli < article_categories.length;cli++){%>
+				<a class='category_tag_link' href='/articles/<%=article.author_id%>/<%=article_categories[cli].id%>'><%=article_categories[cli].name%></a>
 			<%}%>
 
 			<div class='sep5'></div>
 			<span class='col_fade'>
-				<a class='dark' href='/user/<%= author.id %>'><%= author.loginname %></a> 在 <%= archive.create_at %> 发布
-				&nbsp;&nbsp;&nbsp;&nbsp;<a class='dark' href='/user/<%= author.id %>'><%= author.loginname %></a> 在 <%= archive.update_at %> 重新编辑
+				<a class='dark' href='/user/<%= author.id %>'><%= author.loginname %></a> 在 <%= article.create_at %> 发布
+				&nbsp;&nbsp;&nbsp;&nbsp;<a class='dark' href='/user/<%= author.id %>'><%= author.loginname %></a> 在 <%= article.update_at %> 重新编辑
 			</span>
 
 			<span class='sp10'></span>
@@ -26,33 +26,33 @@
 			<% if(locals.current_user){ %>
 			<% if(current_user.id==author.id){ %>
 			<span class='sp10'></span>
-			<a href='/archive/<%= archive.id %>/edit'><img class='user_icon' src='/img/doc_edit_icon&16.png' title='编辑' /></a>
-			<a href='/archive/<%= archive.id %>/delete' onclick="return deleteConfirm();" class='delete_topic_btn'><img class='user_icon' src='/img/trash_icon&16.png' title='删除' /></a>
+			<a href='/article/<%= article.id %>/edit'><img class='user_icon' src='/img/doc_edit_icon&16.png' title='编辑' /></a>
+			<a href='/article/<%= article.id %>/delete' class='delete_topic_btn'><img class='user_icon' src='/img/trash_icon&16.png' title='删除' /></a>
 			<% }%>
 			<% } %>
 		</div>
 	</div>
 	
 	<!-- 回复列表 -->	
-	<% if (archive.replies && archive.replies.length > 0) { %>
+	<% if (article.replies && article.replies.length > 0) { %>
 	<div class='sep10'></div>
 	<div class='panel'>
 		<div class='header'>
-			<span class='col_fade'><%= archive.replies.length %> 回复</span>
+			<span class='col_fade'><%= article.replies.length %> 回复</span>
 		</div>
-		<%- partial('reply/reply', archive.replies) %>
+		<%- partial('reply/reply', article.replies) %>
 	</div>
 	<% } %>
 	
 	<!-- 回复输入框-->	
-	<% if (locals.current_user && locals.archive) { %>
+	<% if (locals.current_user && locals.article) { %>
 	<div class='sep10'></div>
 	<div class='panel' id='reply_editor_panel'>
 		<div class='header'>
 			<span class='col_fade'>添加回复</span>
 		</div>
 		<div class='sep10'></div><div class='sep10'></div>
-		<form class="form-horizontal" id='reply_form' action='/<%= archive.id %>/reply' method='post'>
+		<form class="form-horizontal" id='reply_form' action='/<%= article.id %>/reply' method='post'>
 			<div class='control-group'>
 				<div class='controls' style='margin-left:0px;'>
 					<textarea class='span8' id="editor"  name='r_content' rows='20'></textarea>
@@ -71,7 +71,7 @@
 
 <%-partial('user/profile',{object:author.id, as:'user_id'})%>
 
-<% if (locals.current_user && locals.archive) { %>
+<% if (locals.current_user && locals.article) { %>
 
 <script type='text/javascript'>
 	$(document).ready(function() {
@@ -96,7 +96,7 @@
 					reply_id = $me.parents('.reply_item').attr('reply_id');
 				}
 				var data = {
-				    archive_id:<%=archive.id%>,
+				    article_id:<%=article.id%>,
 					reply_id: reply_id,
 					_csrf: "<%- csrf %>"
 				};

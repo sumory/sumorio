@@ -1,4 +1,3 @@
-
 <%
 var isCurrentUser = false;
 if(locals.current_user && (locals.current_user.id == user_id)){
@@ -6,7 +5,7 @@ if(locals.current_user && (locals.current_user.id == user_id)){
 }
 %>
 
-<div class="side_span">
+<div class="side_span" style='min-height:200px;'>
 	<div class='user_card' id='user_card'>
 		<div class='user_card_left'>
 			<h1><a href="#"></a></h1>
@@ -18,7 +17,7 @@ if(locals.current_user && (locals.current_user.id == user_id)){
 
 	<% if(isCurrentUser){%>
 	<div class="operate">
-		<a href="/archive/create" class="btn btn-info"><i class="icon-pencil icon-white"></i> 发布文章</a>
+		<a href="/article/create" class="btn btn-info"><i class="icon-pencil icon-white"></i> 发布文章</a>
 		<a href="/file/upload" class="btn btn-info"><i class="icon-upload icon-white"></i> 上传文件</a>
 	</div>
 	<%}else{%>
@@ -34,15 +33,14 @@ if(locals.current_user && (locals.current_user.id == user_id)){
 
 
 <script>
-	$(document).ready(function() {
-	    
+	$(document).ready(function() {    
 		var html_user_card = '<div class="user_card_left">'+
 		'<h1><a href="/user/${user.id}">${user.loginname}</a></h1>'+
 		'<p><a href="/${user.id}/follower">粉丝： <span>${follower_count}</span>个</a></p>'+
 		'<p><a href="/${user.id}/following">关注： <span>${following_count}</span>人</a></p>'+
 		'</div>'+
 		'<div class="user_card_right">'+
-			'<a href="/user/${user.id}" title="${user.loginname}" class="img x"><img style="width:70px;" src="${user.avatar}"></a>'+
+			'<a href="/user/${user.id}" title="${user.loginname}" class="img x"><img style="width:70px;height:70px;" src="${user.avatar}"></a>'+
 		'</div>';
 		var tpl_user_card=juicer(html_user_card);
 		
@@ -55,7 +53,7 @@ if(locals.current_user && (locals.current_user.id == user_id)){
 		    html_caregory_panel+='<li>&nbsp;Ta 的归档'; 
 		}
 		html_caregory_panel+='{@each categories as item,index}'+
-		'<li>▶&nbsp;&nbsp;<a href="/archives/${item.user_id}/${item.id}">${item.name}&nbsp;&nbsp;({@if !item.archive_count}0{@else}${item.archive_count}{@/if})</a></li>'+
+		'<li>▶&nbsp;&nbsp;<a href="/articles/${item.user_id}/${item.id}">${item.name}&nbsp;&nbsp;({@if !item.article_count}0{@else}${item.article_count}{@/if})</a></li>'+
 		'{@/each}';
 		var tpl_caregory_panel=juicer(html_caregory_panel);
 		

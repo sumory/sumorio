@@ -1,12 +1,12 @@
 var async = require('async');
 var check = require('validator').check;
 var sanitize = require('validator').sanitize;
-var mysql = require('../lib/mysql.js');
-var Util = require('../lib/util.js');
-var log = require('../lib/log.js');
-var common = require('./common/common.js');
-var memssage_ctrl = require('./message.js');
-var user_ctrl = require('./user.js');
+var Util = require('../../lib/util.js');
+var log = require('../../lib/log.js');
+var common = require('../common/common.js');
+var memssage_ctrl = require('../message/message.js');
+var userDao = require('../../dao/user.js');
+var followDao = require('../../dao/follow.js');
 
 /**
  * 加关注
@@ -19,9 +19,8 @@ exports.follow = function(req, res, next) {
 
     var to_follow_id = req.params.to_follow_id;
     var create_at = Util.format_date(new Date());
-    mysql.update('insert into follow(user_id, following_id, create_at) values(?,?,?)', [ req.session.user.id, to_follow_id, create_at ], function(err, info) {
+    followDao.saveFollow(req.session.user.id, to_follow_id, create_at, function(err, info) {
         if (err) {
-            log.error(err);
             res.json(JSON.parse('{"flag":"fail","info":"关注用户发生错误"}'));
             return;
         }
@@ -46,9 +45,8 @@ exports.unfollow = function(req, res, next) {
     }
 
     var to_unfollow_id = req.params.to_unfollow_id;
-    mysql.update('delete from follow where user_id =? and following_id = ?', [ req.session.user.id, to_unfollow_id ], function(err, info) {
+    followDao.deleteFollow( req.session.user.id, to_unfollow_id , function(err, info) {
         if (err) {
-            log.error(err);
             res.json(JSON.parse('{"flag":"fail","info":"取消关注发生错误"}'));
             return;
         }
@@ -73,7 +71,7 @@ exports.isfollow = function(req, res, next) {
     }
 
     var user_id = req.params.user_id;
-    mysql.queryOne('select * from follow where user_id =? and following_id = ?', [ req.session.user.id, user_id ], function(err, follow) {
+    followDao.queryFollow(req.session.user.id, user_id, function(err, follow) {
         if (err) {
             log.error(err);
             res.json(JSON.parse('{"flag":"fail"}'));
@@ -95,8 +93,8 @@ exports.isfollow = function(req, res, next) {
  */
 exports.view_followings = function(req, res, next) {
     var user_id = req.params.user_id;
-    common.get_all_followings(user_id, function(err, users) {
-        user_ctrl.user_count(users, function(err, users){
+    userDao.queryAllFollowings(user_id, function(err, users) {
+        userDao.userCount(users, function(err, users){
             res.render('user/person', {
                 user_id : user_id,
                 users : users,
@@ -112,9 +110,8 @@ exports.view_followings = function(req, res, next) {
  */
 exports.view_followers = function(req, res, next) {
     var user_id = req.params.user_id;
-
-    common.get_all_followers(user_id, function(err, users) {
-        user_ctrl.user_count(users, function(err, users){
+    userDao.queryAllFollowers(user_id, function(err, users) {
+        userDao.userCount(users, function(err, users){
             res.render('user/person', {
                 user_id : user_id,
                 users : users,

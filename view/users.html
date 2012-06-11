@@ -17,7 +17,7 @@
 					<% } %>
 					<span class='user_name'><a class='dark' href='/user/<%= user.id %>'><%= user.loginname %></a></span>
 					<div class='sep5'></div>
-					<span class='col_fade'>文章数: <a href='/<%=user.id%>/archives'><%=user.archive_count?user.archive_count:0%></a>&nbsp;&nbsp;&nbsp;&nbsp;粉丝: <a href='/<%=user.id%>/follower'><%=user.follower_count?user.follower_count:0%></a>&nbsp;&nbsp;&nbsp;&nbsp;关注: <a href='/<%=user.id%>/following'><%=user.following_count?user.following_count:0%></a></span>
+					<span class='col_fade'>文章数: <a href='/<%=user.id%>/articles'><%=user.article_count?user.article_count:0%></a>&nbsp;&nbsp;&nbsp;&nbsp;粉丝: <a href='/<%=user.id%>/follower'><%=user.follower_count?user.follower_count:0%></a>&nbsp;&nbsp;&nbsp;&nbsp;关注: <a href='/<%=user.id%>/following'><%=user.following_count?user.following_count:0%></a></span>
 			</div>	
 			<%}%>
 			

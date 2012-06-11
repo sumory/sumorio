@@ -1,0 +1,12 @@
+<div class='cell'>
+	<div class='user_avatar' style="margin-right:20px;">
+		<a href='/user/<%=article.author.id%>'><img width="48px" src='<%=article.author.avatar%>' title='<%=article.author.loginname%>' /></a>
+	</div>
+	<a href='/article/<%=article.id%>'><%=article.title%></a> <a class='count fr' href='/article/<%=article.id%>#reply1'><%=article.reply_count%></a>
+	<div class='sep10'></div>
+	<div class='sep5'></div>
+	<span class='col_fade' style='color:#aaa;'>
+		<%=article.visit_count%>点击&nbsp;&nbsp;<%=article.reply_count%>回复
+		&nbsp;&nbsp;&nbsp;<%=article.friendly_create_at%>发布
+	</span>
+</div>

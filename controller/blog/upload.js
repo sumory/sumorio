@@ -5,7 +5,7 @@ var config = require('../../config.js').config;
 var mod = require('express/node_modules/connect/node_modules/formidable');
 
 
-var path_prefix = config.archive_pic_path;
+var path_prefix = config.article_pic_path;
 var upload_path = path.join(path.dirname(__dirname), '../../public' + path_prefix);//上传的图片位于public目录下的‘path_prefix’文件夹下
 ndir.mkdir(upload_path, function(err) {
     if (err)

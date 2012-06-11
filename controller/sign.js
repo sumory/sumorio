@@ -1,15 +1,11 @@
 var check = require('validator').check;
 var sanitize = require('validator').sanitize;
-var common = require('./common/common.js');
 var config = require('../config.js').config;
-var mysql = require('../lib/mysql.js');
+var userDao = require('../dao/user.js');
+var Util = require('../lib/util.js');
 
 /**
  * 注册
- * 
- * @param req
- * @param res
- * @param next
  */
 exports.signup = function(req, res, next) {
     var method = req.method.toLowerCase();
@@ -80,7 +76,7 @@ exports.signup = function(req, res, next) {
             return;
         }
 
-        mysql.query('select * from user where loginname=? or email=?', [ loginname, email ], function(err, users) {
+        userDao.queryUsersByEmailOrLoginName(loginname, email, function(err, users) {
             if (err)
                 return next(err);
             if (users.length > 0) {
@@ -91,12 +87,10 @@ exports.signup = function(req, res, next) {
                 });
                 return;
             }
-
-            pass = common.md5(pass);// md5 the pass
+            pass = Util.md5(pass);// md5 the pass
             // create gavatar
-            var avatar_url = '/user_data/avatar/avatar.png';//'http://www.gravatar.com/avatar/' + common.md5(email) + '?size=48';网速问题，初始化头像时不再支持gravatar
-
-            mysql.insert('insert into user(loginname,email,pwd,create_at,avatar) values(?,?,?,?,?)', [ loginname, email, pass, new Date(), avatar_url ], function(err, info) {
+            var avatar_url = '/user_data/avatar/avatar.png';//'http://www.gravatar.com/avatar/' + Util.md5(email) + '?size=48';网速问题，初始化头像时不再支持gravatar
+            userDao.saveUser(loginname, email, pass, new Date(), avatar_url, function(err, info) {
                 if (err)
                     return next(err);
                 res.render('sign/signup', {
@@ -110,10 +104,6 @@ exports.signup = function(req, res, next) {
 
 /**
  * 登录
- * 
- * @param req
- * @param res
- * @param next
  */
 exports.signin = function(req, res, next) {
     var method = req.method.toLowerCase();
@@ -125,15 +115,13 @@ exports.signin = function(req, res, next) {
         var name = sanitize(req.body.name).trim();
         var loginname = name.toLowerCase();
         var pass = sanitize(req.body.pass).trim();
-
         if (name == '' || pass == '') {
             res.render('sign/signin', {
                 error : '信息不完整。'
             });
             return;
         }
-
-        mysql.queryOne('select * from user where loginname=?', [ loginname ], function(err, user) {
+        userDao.queryUserByLoginName(loginname, function(err, user) {
             if (err)
                 return next(err);
             if (!user) {
@@ -143,7 +131,7 @@ exports.signin = function(req, res, next) {
                 return;
             }
 
-            pass = common.md5(pass);
+            pass = Util.md5(pass);
             if (pass != user.pwd) {
                 res.render('sign/signin', {
                     error : '密码错误。'
@@ -154,7 +142,6 @@ exports.signin = function(req, res, next) {
             gen_session(user, res);// store session cookie
             res.redirect('home');
         });
-
     }
 };
 
@@ -171,7 +158,7 @@ exports.signout = function(req, res, next) {
 
 
 function gen_session(user, res) {
-    var auth_token = common.encrypt(user.id + '\t' + user.loginname + '\t' + user.pwd + '\t' + user.email, config.session_secret);
+    var auth_token = Util.encrypt(user.id + '\t' + user.loginname + '\t' + user.pwd + '\t' + user.email, config.session_secret);
     res.cookie(config.auth_cookie_name, auth_token, {
         path : '/',
         maxAge : 1000 * 60 * 60 * 24 * 7
@@ -191,11 +178,11 @@ exports.auth_user = function(req, res, next) {
         if (!cookie)
             return next();
 
-        var auth_token = common.decrypt(cookie, config.session_secret);
+        var auth_token = Util.decrypt(cookie, config.session_secret);
         var auth = auth_token.split('\t');
         var user_id = auth[0];
 
-        mysql.queryOne("select * from user where id = ?", [ user_id ], function(err, user) {
+        userDao.queryUser( user_id , function(err, user) {
             if (err)
                 return next(err);
             if (user) {

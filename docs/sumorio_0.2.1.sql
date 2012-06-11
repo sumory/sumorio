@@ -1,17 +1,17 @@
 /*
 MySQL Data Transfer
-Source Host: 192.168.1.111
+Source Host: 192.168.1.126
 Source Database: sumorio
-Target Host: 192.168.1.111
+Target Host: 192.168.1.126
 Target Database: sumorio
-Date: 2012/5/10 13:01:25
+Date: 2012/6/11 18:07:33
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 -- ----------------------------
--- Table structure for archive
+-- Table structure for article
 -- ----------------------------
-CREATE TABLE `archive` (
+CREATE TABLE `article` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(100) DEFAULT '',
   `content` varchar(20000) DEFAULT '' COMMENT 'utf8的只能接受21000多个字符(带中文)',
@@ -25,22 +25,14 @@ CREATE TABLE `archive` (
   `last_reply_at` datetime DEFAULT '1970-01-01 00:00:00',
   `content_is_html` int(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Table structure for archive_category
+-- Table structure for article_category
 -- ----------------------------
-CREATE TABLE `archive_category` (
-  `archive_id` int(11) DEFAULT NULL,
+CREATE TABLE `article_category` (
+  `article_id` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Table structure for archive_nav
--- ----------------------------
-CREATE TABLE `archive_nav` (
-  `archive_id` int(11) DEFAULT NULL,
-  `nav_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -52,7 +44,7 @@ CREATE TABLE `category` (
   `sequence` int(4) DEFAULT '0',
   `user_id` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for file
@@ -70,7 +62,7 @@ CREATE TABLE `file` (
   `create_at` datetime NOT NULL DEFAULT '1970-01-01 00:00:00',
   `description` varchar(100) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for folder
@@ -82,7 +74,7 @@ CREATE TABLE `folder` (
   `create_at` datetime NOT NULL DEFAULT '1970-01-01 00:00:00',
   `sequence` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for follow
@@ -107,17 +99,7 @@ CREATE TABLE `message` (
   `is_read` bit(1) DEFAULT b'0' COMMENT '0表示未读，1表示已读',
   PRIMARY KEY (`id`),
   KEY `index_message_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Table structure for nav
--- ----------------------------
-CREATE TABLE `nav` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(30) DEFAULT '',
-  `sequence` int(4) DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for reply
@@ -125,13 +107,13 @@ CREATE TABLE `nav` (
 CREATE TABLE `reply` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `content` varchar(20000) DEFAULT '',
-  `archive_id` int(11) DEFAULT '0',
+  `article_id` int(11) DEFAULT '0',
   `author_id` int(11) DEFAULT '0',
   `create_at` datetime DEFAULT '1970-01-01 00:00:00',
   `update_at` datetime DEFAULT '1970-01-01 00:00:00',
   `content_is_html` int(11) DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Table structure for user
@@ -145,10 +127,9 @@ CREATE TABLE `user` (
   `avatar` varchar(255) DEFAULT '/img/avatar.png',
   PRIMARY KEY (`id`),
   KEY `index_user_id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records 
 -- ----------------------------
-
-INSERT INTO `user` VALUES ('10', 'sumory', 'e10adc3949ba59abbe56e057f20f883e', 'sumory@gg.com', '2012-03-14 10:11:55', '/img/avatar.png');
+INSERT INTO `user` VALUES ('10', 'sumory', 'e10adc3949ba59abbe56e057f20f883e', 'sdfdf@gg.com', '2012-03-14 10:11:55', '/user_data/avatar/10.jpg');

@@ -1,0 +1,18 @@
+<div class='cell'>
+	<div class='user_avatar' style="margin-right:20px;">
+		<div class='calendar'>
+			<div class='calendar-month'><%=article.create_at.substring(5,7)%></div>
+			<div class='calendar-day'><%=article.create_at.substring(8,10)%></div>
+		</div>
+	</div>
+	<a class='article_title' href='/article/<%=article.id%>'><%=article.title%></a> <a class='count fr' href='/article/<%=article.id%>#reply1'><%=article.reply_count%></a>
+	<div class='sep10'></div>
+	<div class='sep5'></div>
+	<span class='col_fade'>
+	• <%=article.visit_count%>次点击 • <%=article.reply_count%>次回复
+	<%if(article.update_at != article.create_at){%>
+	 •  <%=article.update_at%> 更新  
+	<%}%>
+	</span>
+	
+</div>

@@ -7,8 +7,8 @@
 		<div class='header'>
 			<span class='col_fade'><i class="icon-time"></i> 最新文章</span>
 		</div>
-		<% if(new_archives && new_archives.length > 0){ %> 
-		<%-partial('archive/archive_item_2',{collection:new_archives,as:'archive'}) %>
+		<% if(new_articles && new_articles.length > 0){ %> 
+		<%-partial('article/article_item_2',{collection:new_articles,as:'article'}) %>
 		<%}else{}%>
 	</div>
 	
@@ -18,8 +18,8 @@
 		<div class='header'>
 			<span class='col_fade'><i class="icon-eye-open"></i> 最多访问</span>
 		</div>
-		<% if(most_visit_archives && most_visit_archives.length > 0){ %> 
-		<%-partial('archive/archive_item_2',{collection:most_visit_archives,as:'archive'}) %>
+		<% if(most_visit_articles && most_visit_articles.length > 0){ %> 
+		<%-partial('article/article_item_2',{collection:most_visit_articles,as:'article'}) %>
 		<%}else{}%>
 	</div>
 	
@@ -29,8 +29,8 @@
 		<div class='header'>
 			<span class='col_fade'><i class="icon-comment"></i> 最多回复</span>
 		</div>
-		<% if(most_reply_archives && most_reply_archives.length > 0){ %> 
-		<%-partial('archive/archive_item_2',{collection:most_reply_archives,as:'archive'}) %>
+		<% if(most_reply_articles && most_reply_articles.length > 0){ %> 
+		<%-partial('article/article_item_2',{collection:most_reply_articles,as:'article'}) %>
 		<%}else{}%>
 	</div>
 	

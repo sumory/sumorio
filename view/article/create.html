@@ -1,0 +1,87 @@
+<div class="main-body">
+	<div class='panel'>
+		<div class='header'>
+			<span class='col_fade'>发布文章</span>
+		</div>
+		<form id='create_article_form' action='/article/create' method='post' onSubmit="return check();">
+			<div class='inner'>
+				<%if(locals.edit_error){%>
+				<div class="alert alert-error">
+					<strong><%= edit_error %></strong>
+				</div>
+				<%}%> 
+				<%if(categories && categories.length>0){%>
+				<div>
+					<label class='bold' for='title'>标题</label>
+					<div>
+						<% if(locals.title){ %> 
+							<input class='span8' id='title' name='title' maxlength='100' style='width: 550px' value='<%= title %>'> 
+						<% }else{ %> 
+							<input class='span8' id='title' name='title' maxlength='100' style='width: 550px' value=''>
+						<% } %> 字数在8到100个之间
+					</div>
+				</div>
+				<div class='sep10'></div>
+				<div class='sep10'></div>
+				<div>
+					<label class='bold' for='t_content'>内容和标签</label>
+					<div class='tabbable'>
+						<div style='width: 698px; height: 40px; padding: 10px 0;'><%-
+							partial('article/category_selectable',{collection:categories, as:'category'}) %></div>
+						<div class='input'>
+							<% if(locals.content){ %>
+							<textarea id="editor" name='content' rows='20' style='width: 700px; height: auto;'><%= content %></textarea>
+							<% }else{ %>
+							<textarea id="editor" name='content' rows='20' style='width: 700px; height: auto;'></textarea>
+							<% } %>
+						</div>
+					</div>
+				</div>
+				<input type='hidden' id='article_categories' name='article_categories' value=''></input> <input type='hidden'
+					name='_csrf' value='<%= csrf %>' />
+
+				<div class='form-actions'>
+					<input type='submit' id='submit_btn' class='btn' value="发布" />
+				</div>
+				<script type='text/javascript'>
+                    window.UEDITOR_CONFIG.minFrameHeight = 500;
+                    var editor = new baidu.editor.ui.Editor();
+                    editor.render('editor');
+
+                    $('.category_selectable').click(function() {
+                        $(this).toggleClass('category_select');
+                    });
+
+                    function check() {
+                        editor.sync();//同步
+                        var values = [];
+                        $('.category_selectable').each(function() {
+                            if ($(this).hasClass('category_select')) {
+                                values.push($(this).attr('tag_id'));
+                            }
+                        });
+                        $('#article_categories').val(values);
+                        if (document.getElementById('title').value.length > 100 || document.getElementById('title').value.length < 8) {
+                            alert('标题字数须在8-100之间');
+                            return false;
+                        }
+                        else if (document.getElementById('article_categories').value == '') {
+                            alert('请至少选择一个分类');
+                            return false;
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                </script>
+				<%}else{%>
+				<div class="alert alert-error">
+					请先<a href='/categories/edit'>新建文章分类</a>再发布文章
+				</div>
+				<%}%>
+			</div>
+		</form>
+	</div>
+</div>
+
+<%-partial('user/profile',{object:locals.current_user.id, as:'user_id'})%>
